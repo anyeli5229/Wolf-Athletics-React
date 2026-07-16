@@ -1,17 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { RutinaFormulario } from "../types/formulario";
+import type { Rutina } from "../types/rutina";
 
 type FormularioRutinaProps = {
   onCrearRutina: (rutina: RutinaFormulario) => void;
+  onActualizarRutina: (id: string, datosActualizados: RutinaFormulario) => void;
+  cancelarEdicion: () => void;
+  rutinaEditar: Rutina | null;
 };;
 
-function FormularioRutina({ onCrearRutina }: FormularioRutinaProps) {
+function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, rutinaEditar }: FormularioRutinaProps) {
 
   const [formulario, setFormulario] = useState({
     nombre: "",
     intensidad: "",
-    duracion: 0
+    duracion: ""
   });
+
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    if (rutinaEditar) {
+      setFormulario({
+        nombre: rutinaEditar.nombre,
+        intensidad: rutinaEditar.intensidad,
+        duracion: rutinaEditar.duracion.toString(),
+      })
+    } else {
+      setFormulario({
+        nombre: "",
+        intensidad: "",
+        duracion: ""
+      })
+    }
+  }, [rutinaEditar])
 
 
   function manejarCambio(evento: React.ChangeEvent<HTMLInputElement>) {
@@ -19,27 +41,64 @@ function FormularioRutina({ onCrearRutina }: FormularioRutinaProps) {
     const { name, value } = evento.target;
 
     setFormulario((anterior) => ({
-      ...anterior,
-      [name]: name === "duracion" ? Number(value) : value
+      ...anterior,//"Conserva el formulario anterior y cambia solamente el campo que modificó el usuario"
+      [name]: name === "duracion" ? +value : value
     }));
 
   }
 
+  function validarFormulario() {
 
-  function manejarSubmit( evento: React.SubmitEvent<HTMLFormElement>) {
+    if (formulario.nombre.trim() === "") {
+      return "El nombre es obligatorio";
+    }
+
+
+    if (formulario.intensidad.trim() === "") {
+      return "La intensidad es obligatoria";
+    }
+
+
+    if (+formulario.duracion <= 0) {
+      return "La duración debe ser mayor a 0";
+    }
+
+
+    return null;
+
+  }
+
+
+  function manejarSubmit(evento: React.SubmitEvent<HTMLFormElement>) {
 
     evento.preventDefault();
 
-    onCrearRutina(formulario);
+    const mensajeError = validarFormulario();
+
+    if (mensajeError) {
+      setError(mensajeError);
+      return;
+    }
+
+
+    setError("");
+
+    if (rutinaEditar) {
+      onActualizarRutina(rutinaEditar.id, formulario);
+    } else {
+      onCrearRutina(formulario);
+    }
+
+
+    cancelarEdicion();
 
     setFormulario({
       nombre: "",
       intensidad: "",
-      duracion: 0
+      duracion: ""
     });
 
   }
-
 
   return (
     <form onSubmit={manejarSubmit}>
@@ -68,10 +127,24 @@ function FormularioRutina({ onCrearRutina }: FormularioRutinaProps) {
         placeholder="Duración"
       />
 
-
       <button type="submit">
-        Crear rutina
+        {rutinaEditar ? "Guardar cambios" : "Crear rutina"}
       </button>
+
+      {rutinaEditar && (
+        <button
+          type="button"
+          onClick={cancelarEdicion}
+        >
+          Cancelar
+        </button>
+      )}
+
+      {error && (
+        <p>
+          {error}
+        </p>
+      )}
 
     </form>
   );

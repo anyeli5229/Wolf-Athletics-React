@@ -1,12 +1,25 @@
-import { useState } from "react";
-import RutinaCard from "./components/RutinaCard";
+import { useEffect, useState } from "react";
 import FormularioRutina from "./components/FormularioRutina";
 import type { Rutina } from "./types/rutina";
 import type { RutinaFormulario } from "./types/formulario";
+import ListaRutinas from "./components/ListaRutinas";
 
 
 function App() {
-  const [rutinas, setRutinas] = useState<Rutina[]>([]);
+
+  const [rutinas, setRutinas] = useState<Rutina[]>(() => {
+    const rutinasGuardadas = localStorage.getItem('rutinas');
+    if(rutinasGuardadas) {
+      return JSON.parse(rutinasGuardadas);
+    }
+
+    return[];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('rutinas', JSON.stringify(rutinas));
+  }, [rutinas])
+  const [rutinaEditar, setRutinaEditar] = useState<Rutina | null>(null);
 
   function crearRutina(rutinaNueva: RutinaFormulario) {
 
@@ -24,6 +37,30 @@ function App() {
 
   }
 
+  function obtenerRutinaEditar(id: string) {
+    const rutinaEditar = rutinas.find((prevRutinas => prevRutinas.id === id));
+    if (rutinaEditar) {
+      setRutinaEditar(rutinaEditar);
+    }
+  }
+
+  function actualizarRutina(id: string, datosActualizados: RutinaFormulario) {
+    setRutinas(anteriores => anteriores.map(rutina => {
+      if (rutina.id === id) {
+        return {
+          ...rutina,
+          ...datosActualizados
+        }
+      }
+      return rutina;
+    })
+    )
+  }
+
+  function cancelarEdicion() {
+    setRutinaEditar(null);
+  }
+
   function eliminarRutina(id: string) {
     setRutinas((prevRutinas) => prevRutinas.filter(rutinas => rutinas.id !== id))
   }
@@ -35,15 +72,16 @@ function App() {
 
       <FormularioRutina
         onCrearRutina={crearRutina}
+        rutinaEditar={rutinaEditar}//estado 
+        cancelarEdicion={cancelarEdicion}
+        onActualizarRutina={actualizarRutina}
       />
 
-      {rutinas.map(rutina => (
-        <RutinaCard
-          key={rutina.id}
-          rutina={rutina}
-          onEliminar={eliminarRutina}
-        />
-      ))}
+      <ListaRutinas
+        rutinas={rutinas}
+        onEliminar={eliminarRutina}
+        onEditar={obtenerRutinaEditar}
+      />
 
     </>
   );

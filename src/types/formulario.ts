@@ -1,5 +1,3 @@
-export type RutinaFormulario = {
-  nombre: string;
-  intensidad: string;
-  duracion: number;
-};
+import type { Rutina } from "./rutina";
+
+export type RutinaFormulario = Pick<Rutina, "nombre" | "intensidad" | "duracion">;

@@ -4,6 +4,6 @@ export type Rutina = {
   id: string;
   nombre: string;
   intensidad: string;
-  duracion: number;
+  duracion: number | string;
   ejercicios: Ejercicio[];
 };
