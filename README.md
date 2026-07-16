@@ -1,75 +1,35 @@
-# React + TypeScript + Vite
+# 🐺 Wolf Athletics React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web para administrar rutinas de entrenamiento y ejercicios.
 
-Currently, two official plugins are available:
+Este proyecto es la evolución de la versión desarrollada con JavaScript puro y actualmente está siendo reconstruido utilizando React y TypeScript para aplicar una arquitectura moderna basada en componentes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Tecnologías
 
-## React Compiler
+- React
+- TypeScript
+- Vite
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Funcionalidades actuales
 
-## Expanding the ESLint configuration
+- Crear rutinas
+- Editar rutinas
+- Eliminar rutinas
+- Listar rutinas
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📋 Funcionalidades en desarrollo
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Gestión completa de ejercicios
+- Persistencia con LocalStorage
+- Tailwind CSS
+- Backend con Node.js + Express
+- Base de datos PostgreSQL
+- Autenticación de usuarios
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 📸 Capturas
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+_(Próximamente)_
 
-```
+## 🎯 Objetivo
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+Construir una aplicación Full Stack moderna aplicando buenas prácticas de desarrollo, componentes reutilizables, tipado con TypeScript y arquitectura escalable.
