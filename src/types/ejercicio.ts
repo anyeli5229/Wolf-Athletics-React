@@ -1,7 +1,7 @@
 export type Ejercicio = {
   id: string;
   nombre: string;
-  series: number;
-  repeticiones: number;
-  peso: number;
+  series: number | string;
+  repeticiones: number | string;
+  peso: number | string;
 };

@@ -33,6 +33,7 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
         duracion: ""
       })
     }
+    setError("");
   }, [rutinaEditar])
 
 

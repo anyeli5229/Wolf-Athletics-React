@@ -3,31 +3,31 @@ import RutinaCard from "./RutinaCard"
 
 type ListaRutinasProps = {
     rutinas: Rutina[];
-    onEliminar: (id: string) => void;
+    onEntrar: (id: string) => void;
     onEditar: (id: string) => void;
+    onEliminar: (id: string) => void;
 }
 
-export default function ListaRutinas({ rutinas, onEliminar, onEditar }: ListaRutinasProps) {
-    if (rutinas.length === 0) {
-
-        return (
-            <p>
-                No tienes rutinas creadas todavía 🐺
-            </p>
-        );
-
-    } else {
-        return (
-            <section>
-                {rutinas.map(rutina => (
-                    <RutinaCard
-                        key={rutina.id}
-                        rutina={rutina}
-                        onEliminar={onEliminar}
-                        onEditar={onEditar}
-                    />
-                ))}
-            </section>
-        )
-    }
+export default function ListaRutinas({ rutinas, onEntrar, onEditar, onEliminar }: ListaRutinasProps) {
+    return (
+        <>
+            {rutinas.length === 0 ? (
+                <p>
+                    No tienes rutinas creadas todavía 🐺
+                </p>
+            ) : (
+                <section>
+                    {rutinas.map(rutina => (
+                        <RutinaCard
+                            key={rutina.id}
+                            rutina={rutina}
+                            onEntrar={onEntrar}
+                            onEditar={onEditar}
+                            onEliminar={onEliminar}
+                        />
+                    ))}
+                </section>
+            )}
+        </>
+    )
 }

@@ -2,11 +2,12 @@ import type { Rutina } from "../types/rutina";
 
 type RutinaCardProps = {
   rutina: Rutina;
-  onEliminar: (id: string) => void;
+  onEntrar: (id: string) => void;
   onEditar: (id: string) => void;
+  onEliminar: (id: string) => void;
 }
 
-export default function RutinaCard({ rutina, onEliminar, onEditar }: RutinaCardProps) {
+export default function RutinaCard({ rutina, onEntrar, onEditar, onEliminar }: RutinaCardProps) {
     return (
         <>
             <h2>{rutina.nombre}</h2>
@@ -15,7 +16,7 @@ export default function RutinaCard({ rutina, onEliminar, onEditar }: RutinaCardP
 
             <p>Duración: {rutina.duracion} minutos</p>
 
-            <button>Entrar</button>
+            <button onClick={() => onEntrar(rutina.id)}>Entrar</button>
 
             <button onClick={() => onEditar(rutina.id)}>Editar</button>
 
