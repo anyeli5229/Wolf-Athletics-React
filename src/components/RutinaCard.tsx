@@ -1,4 +1,5 @@
 import type { Rutina } from "../types/rutina";
+import Button from "./ui/Button";
 
 type RutinaCardProps = {
   rutina: Rutina;
@@ -16,7 +17,7 @@ export default function RutinaCard({ rutina, onEntrar, onEditar, onEliminar }: R
 
             <p>Duración: {rutina.duracion} minutos</p>
 
-            <button onClick={() => onEntrar(rutina.id)}>Entrar</button>
+            <Button onClick={() => onEntrar(rutina.id)}>Entrar</Button>
 
             <button onClick={() => onEditar(rutina.id)}>Editar</button>
 
