@@ -9,9 +9,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variants = {
-  primary: "bg-[#2563EB] hover:bg-[#1D4ED8] text-white",
-  secondary: "bg-gray-200 hover:bg-gray-300 text-[#1F2937]",
-  danger: "bg-[#DC2626] hover:bg-[#B91C1C] text-white",
+  primary: "text-white bg-gradient-to-r from-sky-700 to-sky-400 shadow-md shadow-sky-300 hover:scale-105 hover:shadow-lg hover:shadow-sky-300 active:scale-95",
+  secondary: "text-white bg-gradient-to-r from-gray-500 to-gray-400 shadow-md shadow-gray-300 hover:scale-105 hover:shadow-lg hover:shadow-gray-300 active:scale-95",
+  danger: "text-white bg-gradient-to-r from-red-600 to-red-400 shadow-md shadow-red-300 hover:scale-105 hover:shadow-lg hover:shadow-red-300 active:scale-95",
 };
 
 const sizes = {

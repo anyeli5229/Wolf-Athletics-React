@@ -157,7 +157,7 @@ function App() {
   return (
     <>
 
-      <h1>🐺 Wolf Athletics</h1>
+      <h1 className="">🐺 Wolf Athletics</h1>
 
       {rutinaSeleccionada ? (
         <DetalleRutina

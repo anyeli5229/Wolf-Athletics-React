@@ -17,7 +17,7 @@ export default function RutinaCard({ rutina, onEntrar, onEditar, onEliminar }: R
 
             <p>Duración: {rutina.duracion} minutos</p>
 
-            <Button onClick={() => onEntrar(rutina.id)}>Entrar</Button>
+            <Button variant="secondary" onClick={() => onEntrar(rutina.id)}>Entrar</Button>
 
             <button onClick={() => onEditar(rutina.id)}>Editar</button>
 

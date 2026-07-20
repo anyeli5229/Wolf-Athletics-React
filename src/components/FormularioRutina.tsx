@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { RutinaFormulario } from "../types/formulario";
 import type { Rutina } from "../types/rutina";
+import Input from "./ui/Input";
 
 type FormularioRutinaProps = {
   onCrearRutina: (rutina: RutinaFormulario) => void;
@@ -103,6 +104,12 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
 
   return (
     <form onSubmit={manejarSubmit}>
+
+<Input
+    label="Nombre"
+    placeholder="Rutina"
+    helperText="Máximo 30 caracteres"
+/>
 
       <input
         name="nombre"
