@@ -11,21 +11,21 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 
 const states = {
     normal: `
-    border-gray-300
+    border-slate-400
     focus-within:border-sky-500
     focus-within:ring-2
-    focus-within:ring-sky-200
+    focus-within:ring-sky-500/20
   `,
     error: `
-    border-red-500
+    border-red-500/80
     focus-within:border-red-500
     focus-within:ring-2
-    focus-within:ring-red-200
+    focus-within:ring-red-500/20
   `,
     disabled: `
-    bg-gray-100
-    border-gray-200
-    opacity-70
+    bg-slate-900/40
+    border-slate-800/50
+    opacity-50
     cursor-not-allowed
   `,
 };
@@ -33,16 +33,27 @@ const states = {
 const baseContainer = `
     flex
     items-center
-    gap-2
-    px-3
-    py-2
+    gap-2.5
+    px-3.5
+    py-2.5
+    bg-white
     border
-    rounded-lg
+    rounded-xl
     transition-all
     duration-200
 `;
 
-export default function Input({ label, error, helperText, fullWidth = false, startIcon, endIcon, className = "", disabled, id, ...props
+export default function Input({ 
+    label, 
+    error, 
+    helperText, 
+    fullWidth = false, 
+    startIcon, 
+    endIcon, 
+    className = "", 
+    disabled, 
+    id, 
+    ...props
 }: InputProps) {
     const generatedId = useId();
     const inputId = id ?? generatedId;
@@ -52,14 +63,13 @@ export default function Input({ label, error, helperText, fullWidth = false, sta
     return (
         <div className={fullWidth ? "w-full" : ""}>
 
-            <label htmlFor={inputId} className="mb-2 block font-medium text-gray-700">
+            <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700">
                 {label}
             </label>
 
-            <div className={`${baseContainer} ${stateClass} ${className}`}
-            >
+            <div className={`${baseContainer} ${stateClass} ${className}`}>
                 {startIcon && (
-                    <div className="text-gray-400">
+                    <div className="text-slate-500 transition-colors group-focus-within:text-sky-400">
                         {startIcon}
                     </div>
                 )}
@@ -67,23 +77,23 @@ export default function Input({ label, error, helperText, fullWidth = false, sta
                 <input
                     id={inputId}
                     disabled={disabled}
-                    className=" flex-1 bg-transparent border-none outline-none placeholder:text-gray-400"
+                    className="flex-1 bg-white border-none outline-none text-slate-600 text-sm placeholder:text-slate-500 disabled:cursor-not-allowed"
                     {...props}
                 />
 
                 {endIcon && (
-                    <div className="text-gray-400">
+                    <div className="text-slate-500">
                         {endIcon}
                     </div>
                 )}
             </div>
 
             {error ? (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1.5 text-xs font-medium text-red-400">
                     {error}
                 </p>
             ) : helperText ? (
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1.5 text-xs text-slate-400">
                     {helperText}
                 </p>
             ) : null}

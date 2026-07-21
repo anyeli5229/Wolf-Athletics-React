@@ -144,7 +144,7 @@ function App() {
 
   function eliminarEjercicio(rutinaId: string, ejercicioId: string) {
     setRutinas((anteriores) => anteriores.map(rutina => {
-      if(rutina.id === rutinaId) {
+      if (rutina.id === rutinaId) {
         return {
           ...rutina,
           ejercicios: rutina.ejercicios.filter(ejercicio => ejercicio.id !== ejercicioId)
@@ -154,10 +154,12 @@ function App() {
     }))
   }
 
+
   return (
     <>
 
       <h1 className="">🐺 Wolf Athletics</h1>
+
 
       {rutinaSeleccionada ? (
         <DetalleRutina
@@ -184,6 +186,7 @@ function App() {
             onEntrar={entrarRutina}
             onEditar={obtenerRutinaEditar}
             onEliminar={eliminarRutina}
+            onCrearRutina={() => {}}
           />
         </>
       )}

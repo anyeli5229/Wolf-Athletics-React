@@ -31,6 +31,7 @@ export default function DetalleRutina({ rutina, onCrearEjercicio, onEditar, ejer
                 onEliminarEjercicio={(ejercicioId: string) => {
                     onEliminarEjercicio(rutina.id, ejercicioId)
                 }}
+                onCrearEjercicio={() => {}}
             />
             
             <FormularioEjercicios

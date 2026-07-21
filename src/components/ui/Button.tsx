@@ -2,16 +2,20 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "danger-ghost" |"outline";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   isLoading?: boolean;
 };
 
 const variants = {
-  primary: "text-white bg-gradient-to-r from-sky-700 to-sky-400 shadow-md shadow-sky-300 hover:scale-105 hover:shadow-lg hover:shadow-sky-300 active:scale-95",
-  secondary: "text-white bg-gradient-to-r from-gray-500 to-gray-400 shadow-md shadow-gray-300 hover:scale-105 hover:shadow-lg hover:shadow-gray-300 active:scale-95",
-  danger: "text-white bg-gradient-to-r from-red-600 to-red-400 shadow-md shadow-red-300 hover:scale-105 hover:shadow-lg hover:shadow-red-300 active:scale-95",
+  primary: "text-white bg-gradient-to-r from-sky-700 to-sky-400 shadow-md shadow-sky-300/30 hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-300/40 active:scale-95",
+  secondary: "text-white bg-gradient-to-r from-gray-600 to-gray-500 shadow-md shadow-gray-300/30 hover:scale-[1.02] hover:shadow-lg active:scale-95",
+  danger: "text-white bg-gradient-to-r from-red-600 to-red-400 shadow-md shadow-red-300/30 hover:scale-[1.02] hover:shadow-lg active:scale-95",
+  
+  ghost: "text-slate-400 hover:text-white hover:bg-slate-400 focus:bg-slate-800/80 focus:text-slate-100 active:scale-95",
+  "danger-ghost": "text-red-400/80 hover:text-red-400 hover:bg-red-500/10 focus:bg-red-500 focus:text-white active:scale-95", 
+  outline: "text-sky-400 border border-sky-400/40 hover:bg-sky-400/10 hover:border-sky-400 active:scale-95",
 };
 
 const sizes = {
@@ -35,6 +39,7 @@ export default function Button({
       type={type}
       disabled={isLoading}
       className={`
+        inline-flex items-center justify-center
         ${variants[variant]}
         ${sizes[size]}
         ${fullWidth ? "w-full" : ""}
@@ -42,8 +47,7 @@ export default function Button({
         transition-all
         duration-200
         ease-in-out
-        active:scale-95
-        disabled:opacity-60
+        disabled:opacity-50 disabled:pointer-events-none disabled:scale-100
         ${className}
       `}
       {...props}
