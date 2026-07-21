@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { EjercicioFormulario } from "../types/formulario";
 import type { Ejercicio } from "../types/ejercicio";
+import Input from "./ui/Input";
+import Button from "./ui/Button";
 
 type FormularioEjerciciosProps = {
     onCrearEjercicio: (ejercicioNuevo: EjercicioFormulario) => void;
@@ -50,13 +52,13 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
         if (formularioEjercicio.nombre.trim() === "") {
             return "El nombre del ejercicio es obligatorio";
         }
-        if (+formularioEjercicio.series <= 0) {
+        if (!formularioEjercicio.series || +formularioEjercicio.series <= 0) {
             return "Las series del ejercicio son obligatorias";
         }
-        if (+formularioEjercicio.repeticiones <= 0) {
+        if (!formularioEjercicio.repeticiones || +formularioEjercicio.repeticiones <= 0) {
             return "Las repeticiones del ejercicio son obligatorias";
         }
-        if (+formularioEjercicio.peso <= 0) {
+        if (!formularioEjercicio.peso || +formularioEjercicio.peso <= 0) {
             return "El peso del ejercicio es obligatorio";
         }
 
@@ -89,7 +91,7 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
         }
 
         cancelarEdicionEjercicio();
-        
+
         setFormularioEjercicio({
             nombre: "",
             series: "",
@@ -100,53 +102,76 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                name="nombre"
-                value={formularioEjercicio.nombre}
-                onChange={manejarCambio}
-                placeholder="Nombre del ejercicio"
-            />
-
-            <input
-                name="series"
-                value={formularioEjercicio.series}
-                onChange={manejarCambio}
-                placeholder="Series"
-            />
-
-            <input
-                name="repeticiones"
-                value={formularioEjercicio.repeticiones}
-                onChange={manejarCambio}
-                placeholder="Repeticiones"
-            />
-
-            <input
-                name="peso"
-                value={formularioEjercicio.peso}
-                onChange={manejarCambio}
-                placeholder="Peso"
-            />
+        <form onSubmit={handleSubmit} className="space-y-4">
 
             {error && (
-                <p>
-                    {error}
-                </p>
+                <div className="p-3 text-xs font-medium text-red-400 bg-red-500/10 border border-red-500 rounded-xl flex items-center gap-2">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                        </svg>
+                    </span>
+
+                    <span>{error}</span>
+                </div>
             )}
 
-            <button type="submit">
-                {ejercicioEditar ? "Actualizar Ejercicio" : "Agregar Ejercicio"}
-            </button>
+            <Input
+                name="nombre"
+                label="Nombre del ejercicio"
+                placeholder="Ej. Sentadilla, Biceps con mancuerna, jalón al pecho"
+                value={formularioEjercicio.nombre}
+                onChange={manejarCambio}
+                fullWidth
+            />
 
-            {ejercicioEditar && (
-                <button
+            <Input
+                name="series"
+                label="Series del ejercicio"
+                placeholder="Ej. 3"
+                value={formularioEjercicio.series}
+                onChange={manejarCambio}
+                fullWidth
+            />
+
+            <Input
+                name="repeticiones"
+                label="Repeticiones del ejercicio"
+                placeholder="Ej. 10"
+                value={formularioEjercicio.repeticiones}
+                onChange={manejarCambio}
+                fullWidth
+            />
+
+            <Input
+                name="peso"
+                label="Peso del ejercicio"
+                placeholder="Ej. 10"
+                value={formularioEjercicio.peso}
+                onChange={manejarCambio}
+                fullWidth
+            />
+
+            <div className="flex items-center justify-end gap-2 pt-4 mt-6">
+
+                <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={cancelarEdicionEjercicio}
                 >
                     Cancelar
-                </button>
-            )}
+                </Button>
+
+                <Button
+                    type="submit"
+                    size="sm"
+                >
+                    {ejercicioEditar ? "Actualizar Ejercicio" : "Agregar Ejercicio"}
+                </Button>
+
+
+            </div>
 
         </form>
     )

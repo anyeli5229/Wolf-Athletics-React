@@ -13,7 +13,7 @@ const variants = {
   secondary: "text-white bg-gradient-to-r from-gray-600 to-gray-500 shadow-md shadow-gray-300/30 hover:scale-[1.02] hover:shadow-lg active:scale-95",
   danger: "text-white bg-gradient-to-r from-red-600 to-red-400 shadow-md shadow-red-300/30 hover:scale-[1.02] hover:shadow-lg active:scale-95",
   
-  ghost: "text-slate-400 hover:text-white hover:bg-slate-400 focus:bg-slate-800/80 focus:text-slate-100 active:scale-95",
+  ghost: "text-slate-400 hover:text-white hover:bg-slate-400/60 focus:bg-slate-800/80 focus:text-slate-100 active:scale-95",
   "danger-ghost": "text-red-400/80 hover:text-red-400 hover:bg-red-500/10 focus:bg-red-500 focus:text-white active:scale-95", 
   outline: "text-sky-400 border border-sky-400/40 hover:bg-sky-400/10 hover:border-sky-400 active:scale-95",
 };
