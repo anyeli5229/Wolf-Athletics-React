@@ -1,4 +1,3 @@
-import { useState } from "react";
 import FormularioRutina from "./components/FormularioRutina";
 import ListaRutinas from "./components/ListaRutinas";
 import DetalleRutina from "./components/DetalleRutina";
@@ -6,38 +5,38 @@ import Modal from "./components/ui/Modal";
 import Button from "./components/ui/Button";
 import { useRutinas } from "./hooks/userRutinas";
 import type { RutinaFormulario } from "./types/formulario";
+import { useModal } from "./hooks/useModal";
 
 
 function App() {
 
   const { rutinas, rutinaSeleccionada, rutinaEditar, crearRutina, actualizarRutina, eliminarRutina, entrarRutina, volver, seleccionarRutinaEditar, cancelarEdicion, ejercicioEditar, agregarEjercicio, obtenerEjercicioEditar, cancelarEdicionEjercicio, actualizarEjercicio, eliminarEjercicio } = useRutinas();
 
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRutina = useModal();
 
   function abrirModalCrear() {
     cancelarEdicion();
-    setIsModalOpen(true);
+    modalRutina.abrir();
   }
 
   function cerrarModal() {
     cancelarEdicion();
-    setIsModalOpen(false);
+    modalRutina.cerrar();
   }
 
   function handleEditarRutina(id: string) {
     seleccionarRutinaEditar(id);
-    setIsModalOpen(true);
+    modalRutina.abrir();
   }
 
   function handleCrearRutina(datos: RutinaFormulario) {
     crearRutina(datos);
-    cerrarModal();
+    modalRutina.cerrar();
   }
 
   function handleActualizarRutina(id: string, datos: RutinaFormulario) {
     actualizarRutina(id, datos);
-    cerrarModal();
+    modalRutina.cerrar();
   }
 
 
@@ -80,7 +79,7 @@ function App() {
       </main>
 
       <Modal
-        isOpen={isModalOpen}
+        isOpen={modalRutina.isOpen}
         onClose={cerrarModal}
         title={rutinaEditar ? "Editar Rutina" : "Crear Nueva Rutina"}
       >
