@@ -41,7 +41,7 @@ export default function DetalleRutina({
 
     const abrirModalEditar = (ejercicioId: string) => {
         onEditar(ejercicioId);
-        setIsModalOpen(true); // 👈 Abre el modal y selecciona el ejercicio
+        setIsModalOpen(true);
     };
 
     const cerrarModal = () => {
@@ -66,16 +66,16 @@ export default function DetalleRutina({
                     <div className="flex items-center gap-3 mt-2 text-sm text-slate-600">
                         <span className="px-2.5 py-0.5 rounded-full  border border-sky-400 text-sky-400">
                             <div className="flex items-center justify-between gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
                                 </svg>
 
                                 {rutina.intensidad}
                             </div>
                         </span>
                         <div className="flex items-center justify-between gap-1.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
 
                             {rutina.duracion} min
