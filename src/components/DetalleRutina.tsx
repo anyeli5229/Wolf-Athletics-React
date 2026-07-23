@@ -10,7 +10,7 @@ import Modal from "./ui/Modal";
 type DetalleRutinaProps = {
     rutina: Rutina;
     onCrearEjercicio: (rutinaId: string, ejercicioNuevo: EjercicioFormulario) => void;
-    onEditar: (ejercicioId: string) => void;
+    onEditar: (rutinaId: string, ejercicioId: string) => void;
     ejercicioEditar: Ejercicio | null;
     onActualizaEjercicio: (
         rutinaId: string,
@@ -40,7 +40,7 @@ export default function DetalleRutina({
     };
 
     const abrirModalEditar = (ejercicioId: string) => {
-        onEditar(ejercicioId);
+        onEditar(rutina.id, ejercicioId);
         setIsModalOpen(true);
     };
 
@@ -51,9 +51,9 @@ export default function DetalleRutina({
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-300">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-300 mt-5">
                 <div>
-                    <Button variant="ghost" size="sm" onClick={onVolver} className="mb-2">
+                    <Button variant="ghost" size="sm" onClick={onVolver} className="mb-5">
                         ← Volver a rutinas
                     </Button>
 
