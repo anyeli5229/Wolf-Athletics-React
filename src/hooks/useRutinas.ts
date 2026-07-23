@@ -2,50 +2,41 @@ import { useEffect, useState } from "react";
 import type { Rutina } from "../types/rutina";
 import type { EjercicioFormulario, RutinaFormulario } from "../types/formulario";
 import type { Ejercicio } from "../types/ejercicio";
+import type { UseRutinasType } from "../types/hooks";
+import { cargarRutinas, guardarRutinas } from "../services/rutinasStorage";
 
-export type UseRutinasType = {
-  rutinas: Rutina[];
-  rutinaEditar: Rutina | null;
-  crearRutina: (rutinaNueva: RutinaFormulario) => void;
-  actualizarRutina: (id: string, datosActualizados: RutinaFormulario) => void;
-  eliminarRutina: (id: string) => void;
-  seleccionarRutinaEditar: (id: string) => void;
-  cancelarEdicion: () => void;
-  ejercicioEditar: Ejercicio | null;
-  agregarEjercicio: (rutinaId: string, ejercicioNuevo: EjercicioFormulario) => void;
-  seleccionarEjercicioEditar: (rutinaId:string, ejercicioId: string) => void;
-  cancelarEdicionEjercicio: () => void;
-  actualizarEjercicio: (rutinaId: string, ejercicioId: string, datosActualizados: EjercicioFormulario) => void;
-  eliminarEjercicio: (rutinaId: string, ejercicioId: string) => void;
-}
 
-export function useRutinas() : UseRutinasType {
-
-  //Const
-  const STORAGE_KEY = "rutinas";
+export function useRutinas(): UseRutinasType {
 
   // State
 
-  const [rutinas, setRutinas] = useState<Rutina[]>(() => {
-    const rutinasGuardadas = localStorage.getItem(STORAGE_KEY);
-    return rutinasGuardadas ? JSON.parse(rutinasGuardadas) : [];
-  });
+  const [rutinas, setRutinas] = useState<Rutina[]>(cargarRutinas);
 
   const [rutinaEditar, setRutinaEditar] = useState<Rutina | null>(null);
 
   const [ejercicioEditar, setEjercicioEditar] = useState<Ejercicio | null>(null);
 
+
+  //Helpers 
+  function buscarRutina(id: string) {
+    return rutinas.find(rutina => rutina.id === id);
+  }
+
+  function buscarEjercicio(rutina: Rutina, ejercicioId: string) {
+    return rutina.ejercicios.find(ejercicio => ejercicio.id === ejercicioId);
+  }
+
   // Effects
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(rutinas));
+    guardarRutinas(rutinas);
   }, [rutinas]);
 
 
   // Actions
   // CRUD
 
-  const crearRutina = (rutinaNueva: RutinaFormulario) => {
+  function crearRutina(rutinaNueva: RutinaFormulario) {
     const rutina = {
       id: crypto.randomUUID(),
       ...rutinaNueva,
@@ -54,7 +45,7 @@ export function useRutinas() : UseRutinasType {
     setRutinas(anteriores => [...anteriores, rutina]);
   }
 
-  const actualizarRutina = (id: string, datosActualizados: RutinaFormulario) => {
+  function actualizarRutina(id: string, datosActualizados: RutinaFormulario) {
     setRutinas((anteriores) =>
       anteriores.map((rutina) =>
         rutina.id === id ? { ...rutina, ...datosActualizados } : rutina
@@ -62,20 +53,20 @@ export function useRutinas() : UseRutinasType {
     );
   }
 
-  const eliminarRutina = (id: string) => {
+  function eliminarRutina(id: string) {
     setRutinas((prev) => prev.filter((rutina) => rutina.id !== id));
   }
 
   // Edition
 
-  const seleccionarRutinaEditar = (id: string) => {
-    const rutinaEncontrada = rutinas.find(rutina => rutina.id === id);
+  function seleccionarRutinaEditar(id: string) {
+    const rutinaEncontrada = buscarRutina(id);
     if (rutinaEncontrada) {
       setRutinaEditar(rutinaEncontrada);
     }
   }
 
-  const cancelarEdicion = () => {
+  function cancelarEdicion() {
     setRutinaEditar(null);
   }
 
@@ -93,9 +84,9 @@ export function useRutinas() : UseRutinasType {
 
   function seleccionarEjercicioEditar(rutinaId: string, ejercicioId: string) {
     const rutina = rutinas.find(rutina => rutina.id === rutinaId);
-    if(!rutina) return;
-    const ejercicio = rutina.ejercicios.find(ejercicio => ejercicio.id === ejercicioId);
-    if(ejercicio) {
+    if (!rutina) return;
+    const ejercicio = buscarEjercicio(rutina, ejercicioId);
+    if (ejercicio) {
       setEjercicioEditar(ejercicio);
     }
   }

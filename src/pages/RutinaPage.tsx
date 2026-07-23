@@ -1,12 +1,13 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import DetalleRutina from "../components/DetalleRutina";
 import { useRutinasContext } from "../hooks/useRutinasContext";
+import type { Rutina } from "../types/rutina";
 
 export function RutinaPage() {
 
     const { id } = useParams();
     const rutinas = useRutinasContext();
-    const rutina = rutinas.rutinas.find(rutina => rutina.id === id);
+    const rutina = rutinas.rutinas.find((rutina : Rutina) => rutina.id === id);
 
     const navigate = useNavigate();
 

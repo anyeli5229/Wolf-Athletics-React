@@ -3,9 +3,9 @@ import FormularioRutina from "../components/FormularioRutina";
 import ListaRutinas from "../components/ListaRutinas";
 import Header from "../components/ui/Header";
 import Modal from "../components/ui/Modal";
-import type { UseModalType } from "../hooks/useModal";
 import type { RutinaFormulario } from "../types/formulario";
 import { useRutinasContext } from "../hooks/useRutinasContext";
+import type { UseModalType } from "../types/hooks";
 
 type HomeProps = {
     modal: UseModalType;
