@@ -1,14 +1,11 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import DetalleRutina from "../components/DetalleRutina";
-import type { UseRutinasType } from "../hooks/useRutinas";
+import { useRutinasContext } from "../hooks/useRutinasContext";
 
-type RutinaPageProps = {
-    rutinas: UseRutinasType
-}
-
-export function RutinaPage({ rutinas }: RutinaPageProps) {
+export function RutinaPage() {
 
     const { id } = useParams();
+    const rutinas = useRutinasContext();
     const rutina = rutinas.rutinas.find(rutina => rutina.id === id);
 
     const navigate = useNavigate();

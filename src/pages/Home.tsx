@@ -4,16 +4,17 @@ import ListaRutinas from "../components/ListaRutinas";
 import Header from "../components/ui/Header";
 import Modal from "../components/ui/Modal";
 import type { UseModalType } from "../hooks/useModal";
-import type { UseRutinasType } from "../hooks/useRutinas";
 import type { RutinaFormulario } from "../types/formulario";
+import { useRutinasContext } from "../hooks/useRutinasContext";
 
 type HomeProps = {
-    rutinas: UseRutinasType
     modal: UseModalType;
 
 }
 
-export default function Home({ rutinas, modal }: HomeProps) {
+export default function Home({ modal }: HomeProps) {
+
+    const rutinas = useRutinasContext();
 
     const navigate = useNavigate();
     function handleEntarRutina(id: string) {
