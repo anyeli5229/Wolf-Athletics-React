@@ -5,3 +5,5 @@ export const rutinaSchema = z.object({
     intensidad: z.string().min(1, "La intensidad es obligatoria"),
     duracion: z.number().positive("La duración debe ser mayor a cero"),
 });
+
+export type RutinaInput = z.infer<typeof rutinaSchema>;

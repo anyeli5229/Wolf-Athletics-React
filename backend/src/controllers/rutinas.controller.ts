@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { obtenerTodasLasRutinas, crearRutina as crearRutinaService, actualizarRutina as actualizarRutinaService, eliminarRutina as eliminarRutinaService } from "../services/rutinas.services";
+import { RutinaInput } from "../schemas/rutina.schema";
 
 export function obtenerRutinas(req: Request, res: Response) {
 
@@ -8,7 +9,7 @@ export function obtenerRutinas(req: Request, res: Response) {
     res.json(rutinas);
 }
 
-export function crearRutina(req: Request, res: Response) {
+export function crearRutina(req: Request<{}, {}, RutinaInput>, res: Response) {
     const nuevaRutina = crearRutinaService(req.body);
     res.status(201).json(nuevaRutina);
 }
