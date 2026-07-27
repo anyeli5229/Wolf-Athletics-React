@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { rutinaSchema } from "../schemas/rutina.schema";
 import { formatearErroresZod } from "../utils/zodError";
+import { BadRequestError } from "../errors/BadRequestError";
 
 export function validarRutina(req: Request, res: Response, next: NextFunction){
 
@@ -20,7 +21,7 @@ export function validarRutina(req: Request, res: Response, next: NextFunction){
 export function validarId(req: Request<{id: string}>, res: Response, next: NextFunction) {
     const { id } = req.params;
     if(!id) {
-        return res.status(400).json({mensaje: "ID no válido"});
+        throw new BadRequestError("ID no válido");
     }
     next();
 }

@@ -5,7 +5,7 @@ import { formatearErroresZod } from "../utils/zodError";
 export function validateSchema<T>(schema: ZodType<T>) {
 
     return (
-        req: Request<{}, {}, T>,
+        req: Request<{}, {}, T>,//params, request, define el tipo de body
         res: Response,
         next: NextFunction
     ) => {
