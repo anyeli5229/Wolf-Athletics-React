@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String     @id @default(uuid())
+  nombre    String
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  routines  Routine[]
+  createdExercises  Exercise[]
+}
+
+model Routine {
+  id          String   @id @default(uuid())
+  nombre      String
+  descripcion String?
+  nivel       String?
+  duracion    Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  ejercicios RoutineExercise[]
+}
+
+model Exercise {
+  id            String  @id @default(uuid())
+  nombre        String
+  descripcion   String?
+  grupoMuscular String
+  equipo        String?
+  createdBy     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creator User? @relation(fields: [createdBy], references: [id])
+
+  routineExercises RoutineExercise[]
+}
+
+model RoutineExercise {
+  id String @id @default(uuid())
+
+  routineId String
+  routine   Routine @relation(fields: [routineId], references: [id])
+
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orden        Int
+  series       Int
+  repeticiones Int
+  pesoSugerido Float
+  descanso     Int
+  rir          Int
+  notas        String?
+}
