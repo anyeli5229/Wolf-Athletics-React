@@ -3,14 +3,14 @@ import type { Rutina } from "../types/rutina";
 import type { EjercicioFormulario, RutinaFormulario } from "../types/formulario";
 import type { Ejercicio } from "../types/ejercicio";
 import type { UseRutinasType } from "../types/hooks";
-import { cargarRutinas, guardarRutinas } from "../services/rutinasStorage";
+import { obtenerRutinas, crearRutina as crearRutinaApi, actualizarRutina as actualizarRutinaApi, eliminarRutina as eliminarRutinaApi } from "../services/rutinasApi";
 
 
 export function useRutinas(): UseRutinasType {
 
   // State
 
-  const [rutinas, setRutinas] = useState<Rutina[]>(cargarRutinas);
+  const [rutinas, setRutinas] = useState<Rutina[]>([]);
 
   const [rutinaEditar, setRutinaEditar] = useState<Rutina | null>(null);
 
@@ -27,34 +27,37 @@ export function useRutinas(): UseRutinasType {
   }
 
   // Effects
+useEffect(() => {
+    async function cargar() {
+      const rutinas = await obtenerRutinas();
+      setRutinas(rutinas);
+    }
 
-  useEffect(() => {
-    guardarRutinas(rutinas);
-  }, [rutinas]);
+    cargar();
+}, [])
 
 
   // Actions
   // CRUD
 
-  function crearRutina(rutinaNueva: RutinaFormulario) {
-    const rutina = {
-      id: crypto.randomUUID(),
-      ...rutinaNueva,
-      ejercicios: [],
-    };
-    setRutinas(anteriores => [...anteriores, rutina]);
+  async function crearRutina(rutinaNueva: RutinaFormulario) {
+    const rutinaCreada = await crearRutinaApi(rutinaNueva);
+    setRutinas(anteriores => [...anteriores, rutinaCreada]);
   }
 
-  function actualizarRutina(id: string, datosActualizados: RutinaFormulario) {
+  async function actualizarRutina(id: string, datosActualizados: RutinaFormulario) {
+    const rutinaActualizada = await actualizarRutinaApi(id, datosActualizados);
+
     setRutinas((anteriores) =>
       anteriores.map((rutina) =>
-        rutina.id === id ? { ...rutina, ...datosActualizados } : rutina
+        rutina.id === id ? rutinaActualizada : rutina
       )
     );
   }
 
-  function eliminarRutina(id: string) {
-    setRutinas((prev) => prev.filter((rutina) => rutina.id !== id));
+  async function eliminarRutina(id: string) {
+    const rutinaEliminada = await eliminarRutinaApi(id);
+    setRutinas((prev) => prev.filter((rutina) => rutina.id !== rutinaEliminada.id));
   }
 
   // Edition

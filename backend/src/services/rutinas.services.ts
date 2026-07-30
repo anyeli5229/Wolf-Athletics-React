@@ -18,7 +18,11 @@ async function obtenerUsuarioDemo() {
 
 
 export async function obtenerTodasLasRutinas() {
-    return prisma.routine.findMany();
+    return prisma.routine.findMany({
+        include: {
+            ejercicios: true
+        }
+    });
 }
 
 export async function crearRutina(datos: RutinaInput) {
@@ -31,6 +35,9 @@ export async function crearRutina(datos: RutinaInput) {
         data: {
             ...datos,
             userId: usuarioDemo.id
+        },
+        include: {
+            ejercicios: true
         }
     });
 }
@@ -41,7 +48,10 @@ export async function actualizarRutina(id: string, datosActualizados: Actualizar
 
     return prisma.routine.update({
         where: { id },
-        data: datosActualizados
+        data: datosActualizados, 
+        include: {
+            ejercicios: true
+        }
     })
 
 }

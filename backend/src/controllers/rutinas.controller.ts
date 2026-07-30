@@ -3,35 +3,31 @@ import { obtenerTodasLasRutinas, crearRutina as crearRutinaService, actualizarRu
 import { RutinaInput } from "../schemas/rutina.schema";
 import { NotFoundError } from "../errors/NotFoundError";
 
-export function obtenerRutinas(req: Request, res: Response) {
-
-    const rutinas = obtenerTodasLasRutinas();
-
+export async function obtenerRutinas(req: Request, res: Response) {
+    const rutinas = await obtenerTodasLasRutinas();
     res.json(rutinas);
 }
 
-export function crearRutina(req: Request<{}, {}, RutinaInput>, res: Response) {
-    const nuevaRutina = crearRutinaService(req.body);
+export async function crearRutina(req: Request<{}, {}, RutinaInput>, res: Response) {
+    const nuevaRutina = await crearRutinaService(req.body);
     res.status(201).json(nuevaRutina);
 }
 
-export function actualizarRutina(req: Request<{ id: string }>, res: Response) {
+export async function actualizarRutina(req: Request<{ id: string }>, res: Response) {
     const { id } = req.params;
-    const rutinaActualizada = actualizarRutinaService(id, req.body);
+    const rutinaActualizada = await actualizarRutinaService(id, req.body);
     if (!rutinaActualizada) {
         throw new NotFoundError("Rutina no encontrada");
     }
-
     res.json(rutinaActualizada);
 }
 
-export function eliminarRutina(req: Request<{ id: string }>, res: Response) {
+export async function eliminarRutina(req: Request<{ id: string }>, res: Response) {
     const { id } = req.params;
-    const rutinaEliminada = eliminarRutinaService(id);
+    const rutinaEliminada = await eliminarRutinaService(id);
 
     if (!rutinaEliminada) {
         throw new NotFoundError("Rutina no encontrada");
     }
-
     res.json(rutinaEliminada);
 }
