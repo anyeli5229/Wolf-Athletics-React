@@ -1,52 +1,56 @@
-import { Rutina } from "../types/rutina";
+import prisma from "../config/prisma";
+import { ActualizarRutinaInput, RutinaInput } from "../schemas/rutina.schema";
 
-let rutinas: Rutina[] = [
-    {
-        id: "1",
-        nombre: "Pierna",
-        intensidad: "Alta",
-        duracion: 60
-    },
-    {
-        id: "2",
-        nombre: "Push",
-        intensidad: "Media",
-        duracion: 45
-    }
-];
 
-function buscarRutina(id: string) {
-    return rutinas.find(rutina => rutina.id === id);
+async function buscarRutina(id: string) {
+    return prisma.routine.findUnique({
+        where: { id }
+    });
+}
+
+async function obtenerUsuarioDemo() {
+    return await prisma.user.findUnique({
+        where: {
+            email: "demo@wolfathletics.com"
+        }
+    });
 }
 
 
-export function obtenerTodasLasRutinas() {
-    return rutinas;
+export async function obtenerTodasLasRutinas() {
+    return prisma.routine.findMany();
 }
 
-export function crearRutina(datos: Omit<Rutina, "id">) {
-    const nuevaRutina = {
-        id: crypto.randomUUID(),
-        ...datos
-    };
+export async function crearRutina(datos: RutinaInput) {
 
-    rutinas.push(nuevaRutina);
+    const usuarioDemo = await obtenerUsuarioDemo();
 
-    return nuevaRutina;
+    if (!usuarioDemo) return null;
+
+    return prisma.routine.create({
+        data: {
+            ...datos,
+            userId: usuarioDemo.id
+        }
+    });
 }
 
-export function actualizarRutina(id: string, datosActualizados: Omit<Rutina, 'id'>) {
-    const rutina = buscarRutina(id);
-    if(!rutina) return null;
-    Object.assign(rutina, datosActualizados);
-    return rutina;
+export async function actualizarRutina(id: string, datosActualizados: ActualizarRutinaInput) {
+    const rutina = await buscarRutina(id);
+    if (!rutina) return null;
+
+    return prisma.routine.update({
+        where: { id },
+        data: datosActualizados
+    })
+
 }
 
-export function eliminarRutina(id:string) {
-    const rutina = buscarRutina(id);
-    if(!rutina) return null;
-    
-    rutinas = rutinas.filter(rutina => rutina.id !== id);
+export async function eliminarRutina(id: string) {
+    const rutina = await buscarRutina(id);
+    if (!rutina) return null;
 
-    return rutina;
+    return prisma.routine.delete({
+        where: { id }
+    });
 }
