@@ -19,7 +19,7 @@ export default function RutinaCard({ rutina, onEntrar, onEditar, onEliminar }: R
                     </h2>
                     
                     <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                        {rutina.intensidad}
+                        {rutina.nivel}
                     </span>
                 </div>
 

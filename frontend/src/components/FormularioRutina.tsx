@@ -15,7 +15,7 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
 
   const [formulario, setFormulario] = useState({
     nombre: "",
-    intensidad: "Media",
+    nivel: "Medio",
     duracion: ""
   });
 
@@ -25,13 +25,13 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
     if (rutinaEditar) {
       setFormulario({
         nombre: rutinaEditar.nombre,
-        intensidad: rutinaEditar.intensidad,
+        nivel: rutinaEditar.nivel,
         duracion: rutinaEditar.duracion.toString(),
       })
     } else {
       setFormulario({
         nombre: "",
-        intensidad: "Media",
+        nivel: "Medio",
         duracion: ""
       })
     }
@@ -74,7 +74,7 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
 
     const datosEnvio = {
       nombre: formulario.nombre.trim(),
-      intensidad: formulario.intensidad,
+      nivel: formulario.nivel,
       duracion: +formulario.duracion
     };
 
@@ -88,7 +88,7 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
 
     setFormulario({
       nombre: "",
-      intensidad: "Media",
+      nivel: "Medio",
       duracion: ""
     });
 
@@ -124,14 +124,14 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
         </label>
         <div className="relative">
           <select
-            name="intensidad"
-            value={formulario.intensidad}
+            name="nivel"
+            value={formulario.nivel}
             onChange={manejarCambio}
             className="w-full px-3.5 py-2.5 bg-white border border-slate-400 rounded-xl text-slate-700 text-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all duration-200"
           >
-            <option value="Baja" className="text-slate-700">Baja 🟢</option>
-            <option value="Media" className="text-slate-700">Media 🟡</option>
-            <option value="Alta" className="text-slate-700">Alta 🔴</option>
+            <option value="Bajo" className="text-slate-700">Bajo 🟢</option>
+            <option value="Medio" className="text-slate-700">Medio 🟡</option>
+            <option value="Alto" className="text-slate-700">Alto 🔴</option>
           </select>
         </div>
       </div>
