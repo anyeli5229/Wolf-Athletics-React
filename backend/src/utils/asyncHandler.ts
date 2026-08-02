@@ -14,4 +14,4 @@ export function asyncHandler<P = {}, ResBody = any, ReqBody = any>(fn: (req: Req
             .catch(next);
 
     };
-}//Regres un promise o le dice a express que hay un error next(error)
+}//Regresa un promise o le dice a express que hay un error next(error)

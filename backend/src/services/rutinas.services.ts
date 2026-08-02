@@ -1,5 +1,6 @@
 import prisma from "../config/prisma";
 import { ActualizarRutinaInput, RutinaInput } from "../schemas/rutina.schema";
+import { obtenerUsuarioDemo } from "./usuario.service";
 
 
 async function buscarRutina(id: string) {
@@ -7,15 +8,6 @@ async function buscarRutina(id: string) {
         where: { id }
     });
 }
-
-async function obtenerUsuarioDemo() {
-    return await prisma.user.findUnique({
-        where: {
-            email: "demo@wolfathletics.com"
-        }
-    });
-}
-
 
 export async function obtenerTodasLasRutinas() {
     return prisma.routine.findMany({
