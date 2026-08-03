@@ -3,8 +3,23 @@ import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
 import { actualizarRutinaEjercicioInput, rutinaEjercicioInput } from "../schemas/rutinaEjercicio.schema";
 
+async function obtenerEjercicioDeRutina(routineId: string, routineExerciseId: string) {
+    const ejercicioRutina = await prisma.routineExercise.findUnique({
+        where: { id: routineExerciseId }
+    });
 
-export async function obtenerRutinaEjercicios(routineId: string) {
+    if (!ejercicioRutina) {
+        throw new NotFoundError("El ejercicio no existe en la rutina");
+    }
+
+    if (ejercicioRutina.routineId !== routineId) {
+        throw new BadRequestError("El ejercicio no pertenece a esta rutina");
+    }
+
+    return ejercicioRutina;
+}
+
+async function verificarRutinaExiste(routineId: string) {
     const rutinaExiste = await prisma.routine.findUnique({
         where: { id: routineId }
     })
@@ -13,21 +28,30 @@ export async function obtenerRutinaEjercicios(routineId: string) {
         throw new NotFoundError("La rutina especificada no existe");
     }
 
-    return prisma.routineExercise.findMany({
-        where: { routineId },
-        orderBy: {
-            orden: "asc"
-        },
-        include: {
-            exercise: true
-        }
-    })
+}
+
+export async function obtenerRutinaEjercicios(routineId: string) {
+
+    const [_, ejercicios] = await Promise.all([
+        verificarRutinaExiste(routineId),
+        prisma.routineExercise.findMany({
+            where: { routineId },
+            orderBy: {
+                orden: "asc"
+            },
+            include: {
+                exercise: true
+            }
+        })
+    ])
+
+    return ejercicios;
 }
 
 export async function crearRutinaEjercicio(datos: { routineId: string } & rutinaEjercicioInput) {
 
-    const [rutinaExiste, ejercicioExiste, yaExisteEnRutina] = await Promise.all([
-        prisma.routine.findUnique({ where: { id: datos.routineId } }),
+    const [_, ejercicioExiste, yaExisteEnRutina] = await Promise.all([
+        verificarRutinaExiste(datos.routineId),
         prisma.exercise.findUnique({ where: { id: datos.exerciseId } }),
         prisma.routineExercise.findFirst({
             where: {
@@ -37,9 +61,6 @@ export async function crearRutinaEjercicio(datos: { routineId: string } & rutina
         })
     ]);
 
-    if (!rutinaExiste) {
-        throw new NotFoundError("La rutina especificada no existe");
-    }
 
     if (!ejercicioExiste) {
         throw new NotFoundError("El ejercicio seleccionado no existe en el catálogo");
@@ -65,55 +86,40 @@ export async function crearRutinaEjercicio(datos: { routineId: string } & rutina
 }
 
 export async function actualizarEjercicioRutina(routineId: string, routineExerciseId: string, datos: actualizarRutinaEjercicioInput) {
-    const ejercicioRutina = await prisma.routineExercise.findFirst({
-        where: { id: routineExerciseId }
-    });
 
-    if (!ejercicioRutina) {
-        throw new NotFoundError("El ejercicio no existe en la rutina");
-    }
-
-    if (ejercicioRutina.routineId !== routineId) {
-        throw new BadRequestError("El ejercicio no pertenece a esta rutina");
-    }
+    const ejercicioDeLaRutina = await obtenerEjercicioDeRutina(routineId, routineExerciseId);
 
     return await prisma.routineExercise.update({
-        where: { id: ejercicioRutina.id },
+        where: { id: ejercicioDeLaRutina.id },
         data: datos,
         include: { exercise: true }
     });
 }
 
+
 export async function eliminarEjercicioRutina(routineId: string, routineExerciseId: string) {
-    const ejercicioRutina = await prisma.routineExercise.findFirst({
-        where: { id: routineExerciseId }
-    });
+    const ejercicioRutinaAEliminar = await obtenerEjercicioDeRutina(routineId, routineExerciseId);
 
-    if (!ejercicioRutina) {
-        throw new NotFoundError("El ejercicio no existe en la rutina");
-    }
-
-    if (ejercicioRutina.routineId !== routineId) {
-        throw new BadRequestError("El ejercicio no pertenece a esta rutina");
-    }
-
-    const ejercicioEliminado =  await prisma.routineExercise.delete({
-        where: { id: ejercicioRutina.id }
-    });
-
-    //Traemos todos los ejercicios restantes de la rutina
-    const ejerciciosRestantes = await prisma.routineExercise.findMany({
-        where: { routineId },
-        orderBy: { orden: "asc" }
-    });
-
-    // Se asigna 1, 2, 3... según su nueva posición en el arreglo
-    for (let i = 0; i < ejerciciosRestantes.length; i++) {
-        await prisma.routineExercise.update({
-            where: { id: ejerciciosRestantes[i].id },
-            data: { orden: i + 1 }
+    return await prisma.$transaction(async transaccion => {
+        const ejercicioEliminadoDeRutina = await transaccion.routineExercise.delete({
+            where: { id: routineExerciseId }
         });
-    }
 
-    return ejercicioEliminado;
+        await transaccion.routineExercise.updateMany({
+            where: {
+                routineId: routineId,
+                orden: {
+                    gt: ejercicioRutinaAEliminar.orden // gt = Greater Than 
+                }
+            },
+            data: {
+                orden: {
+                    decrement: 1 // Resta 1 automáticamente en la base de datos
+                }
+            }
+        });
+
+        return ejercicioEliminadoDeRutina;
+    });
+
 }
