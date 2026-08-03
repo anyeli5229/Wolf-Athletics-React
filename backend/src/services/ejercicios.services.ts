@@ -10,12 +10,21 @@ async function buscarEjercicio(id: string) {
 }
 
 export async function obtenerTodosLosEjercicios() {
-    return prisma.exercise.findMany();
+    const usuarioDemo = await obtenerUsuarioDemo();
+    if (!usuarioDemo) return null;
+    return prisma.exercise.findMany({
+        where: {
+            OR: [
+                { createdBy: null },
+                { createdBy: usuarioDemo.id }
+            ]
+        }
+    });
 }
 
 export async function crearEjercicio(datos: EjercicioInput) {
     const usuarioDemo = await obtenerUsuarioDemo();
-    if(!usuarioDemo) return null
+    if (!usuarioDemo) return null;
     return prisma.exercise.create({
         data: {
             ...datos,
@@ -25,8 +34,8 @@ export async function crearEjercicio(datos: EjercicioInput) {
 }
 
 export async function actualizarEjercicio(id: string, datosActualizados: ActualizarEjercicioInput) {
-    const ejercicio = await buscarEjercicio(id); 
-    if(!ejercicio)  return null;
+    const ejercicio = await buscarEjercicio(id);
+    if (!ejercicio) return null;
     return prisma.exercise.update({
         where: { id },
         data: datosActualizados
@@ -34,8 +43,8 @@ export async function actualizarEjercicio(id: string, datosActualizados: Actuali
 }
 
 export async function eliminarEjercicio(id: string) {
-    const ejercicio = await buscarEjercicio(id); 
-    if(!ejercicio)  return null;
+    const ejercicio = await buscarEjercicio(id);
+    if (!ejercicio) return null;
     return prisma.exercise.delete({
         where: { id }
     });

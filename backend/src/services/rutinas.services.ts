@@ -3,7 +3,7 @@ import { ActualizarRutinaInput, RutinaInput } from "../schemas/rutina.schema";
 import { obtenerUsuarioDemo } from "./usuario.service";
 
 
-async function buscarRutina(id: string) {
+export async function buscarRutina(id: string) {
     return prisma.routine.findUnique({
         where: { id }
     });
