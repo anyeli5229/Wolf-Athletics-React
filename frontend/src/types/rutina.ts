@@ -1,10 +1,10 @@
-import type { Ejercicio } from "./ejercicio";
-
 export type Rutina = {
   id: string;
   nombre: string;
-  descripcion? : string;
-  nivel: string;
-  duracion: number | string;
-  ejercicios: Ejercicio[];
+  descripcion?: string;
+  nivel?: string;
+  duracion?: number;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
 };

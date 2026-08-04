@@ -1,9 +1,9 @@
-import type { Ejercicio } from "../types/ejercicio";
+import type { RutinaEjercicio } from "../types/rutinaEjercicio";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
 
 type EjercicioCardProps = {
-  ejercicio: Ejercicio;
+  ejercicio: RutinaEjercicio;
   onEditar: (ejercicioId: string) => void;
   onEliminarEjercicio: (ejercicioId: string) => void;
 };
@@ -19,7 +19,7 @@ export default function EjercicioCard({ ejercicio, onEditar, onEliminarEjercicio
 
         <div className="flex items-center justify-between gap-2 mb-4">
           <h2 className="text-lg font-bold text-gray-500 group-hover:text-sky-400 transition-colors">
-            {ejercicio.nombre}
+            {ejercicio.exercise?.nombre}
           </h2>
         </div>
 
@@ -36,7 +36,7 @@ export default function EjercicioCard({ ejercicio, onEditar, onEliminarEjercicio
 
           <div className="flex flex-col items-center">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-700">Peso</span>
-            <span className="text-sm font-bold text-sky-500">{ejercicio.peso} kg</span>
+            <span className="text-sm font-bold text-sky-500">{ejercicio.pesoSugerido} kg</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 const API_URL = "http://localhost:3000/api";
 
-async function request<T>(endpoint: string, options?: RequestInit) : Promise<T> {
+async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const respuesta = await fetch(`${API_URL}${endpoint}`, {
         headers: {
             "Content-Type": "application/json",
@@ -9,8 +9,10 @@ async function request<T>(endpoint: string, options?: RequestInit) : Promise<T> 
         ...options
     });
 
-    if(!respuesta.ok) {
-        throw new Error(`Error ${respuesta.status}`);
+    if (!respuesta.ok) {
+        const error = await respuesta.json();
+
+        throw new Error(error.mensaje || `Error ${respuesta.status}`);
     }
 
     return respuesta.json();

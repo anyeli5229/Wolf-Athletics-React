@@ -1,9 +1,10 @@
 import type { Ejercicio } from "../types/ejercicio"
+import type { RutinaEjercicio } from "../types/rutinaEjercicio";
 import EjercicioCard from "./EjercicioCard"
 import Card from "./ui/Card";
 
 type ListaEjerciciosProps = {
-    ejercicios: Ejercicio[];
+    ejercicios: RutinaEjercicio[];
     onEditar: (ejericioId: string) => void;
     onEliminarEjercicio: (ejercicioId: string) => void;
     onCrearEjercicio?: () => void; 

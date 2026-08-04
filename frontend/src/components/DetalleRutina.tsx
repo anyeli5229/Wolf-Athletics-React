@@ -1,37 +1,30 @@
 import { useState } from "react";
-import type { Ejercicio } from "../types/ejercicio";
-import type { EjercicioFormulario } from "../types/formulario";
+import type { EjercicioEnRutinaFormulario } from "../types/formulario";
 import type { Rutina } from "../types/rutina";
 import FormularioEjercicios from "./FormularioEjercicios";
 import ListaEjercicios from "./ListaEjercicios";
 import Button from "./ui/Button";
 import Modal from "./ui/Modal";
+import type { RutinaEjercicio } from "../types/rutinaEjercicio";
+import type { Ejercicio } from "../types/ejercicio";
 
 type DetalleRutinaProps = {
     rutina: Rutina;
-    onCrearEjercicio: (rutinaId: string, ejercicioNuevo: EjercicioFormulario) => void;
-    onEditar: (rutinaId: string, ejercicioId: string) => void;
-    ejercicioEditar: Ejercicio | null;
-    onActualizaEjercicio: (
-        rutinaId: string,
-        ejercicioId: string,
-        datosActualizados: EjercicioFormulario
-    ) => void;
+    ejercicios: RutinaEjercicio[];
+    ejerciciosCatalogo: Ejercicio[];
+    errorEjercicio: string;
+    limpiarErrorEjercicio: () => void;
+    onCrearEjercicio: (datos: EjercicioEnRutinaFormulario) => Promise<boolean>;
+    onEditar: (ejercicioId: string) => void;
+    ejercicioEditar: RutinaEjercicio | null;
+    onActualizaEjercicio: (ejercicioId: string, datosActualizados: EjercicioEnRutinaFormulario) => void;
     cancelarEdicionEjercicio: () => void;
-    onEliminarEjercicio: (rutinaId: string, ejercicioId: string) => void;
+    onEliminarEjercicio: (ejercicioId: string) => void;
     onVolver: () => void;
 };
 
-export default function DetalleRutina({
-    rutina,
-    onCrearEjercicio,
-    onEditar,
-    ejercicioEditar,
-    onActualizaEjercicio,
-    cancelarEdicionEjercicio,
-    onEliminarEjercicio,
-    onVolver,
-}: DetalleRutinaProps) {
+export default function DetalleRutina({ rutina, ejercicios, ejerciciosCatalogo, errorEjercicio, limpiarErrorEjercicio, onCrearEjercicio, onEditar, ejercicioEditar, onActualizaEjercicio, cancelarEdicionEjercicio, onEliminarEjercicio, onVolver }: DetalleRutinaProps) {
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const abrirModalCrear = () => {
@@ -40,12 +33,13 @@ export default function DetalleRutina({
     };
 
     const abrirModalEditar = (ejercicioId: string) => {
-        onEditar(rutina.id, ejercicioId);
+        onEditar(ejercicioId);
         setIsModalOpen(true);
     };
 
     const cerrarModal = () => {
         setIsModalOpen(false);
+        limpiarErrorEjercicio();
         cancelarEdicionEjercicio();
     };
 
@@ -93,10 +87,10 @@ export default function DetalleRutina({
             <div>
                 <h3 className="text-xl font-bold text-slate-500 mb-4">Ejercicios</h3>
                 <ListaEjercicios
-                    ejercicios={rutina.ejercicios}
+                    ejercicios={ejercicios}
                     onEditar={abrirModalEditar}
                     onEliminarEjercicio={(ejercicioId: string) => {
-                        onEliminarEjercicio(rutina.id, ejercicioId);
+                        onEliminarEjercicio(ejercicioId);
                     }}
                     onCrearEjercicio={abrirModalCrear}
                 />
@@ -108,12 +102,11 @@ export default function DetalleRutina({
                 title={ejercicioEditar ? "Editar Ejercicio" : "Agregar Ejercicio"}
             >
                 <FormularioEjercicios
-                    onCrearEjercicio={(ejercicio) => {
-                        onCrearEjercicio(rutina.id, ejercicio);
-                        cerrarModal();
-                    }}
-                    onActualizaEjercicio={(ejercicioEditado: Ejercicio) => {
-                        onActualizaEjercicio(rutina.id, ejercicioEditado.id, ejercicioEditado);
+                    ejerciciosCatalogo={ejerciciosCatalogo}
+                    errorEjercicio={errorEjercicio}
+                    onCrearEjercicio={onCrearEjercicio}
+                    onActualizaEjercicio={(ejercicioId, datos) => {
+                        onActualizaEjercicio(ejercicioId, datos);
                         cerrarModal();
                     }}
                     ejercicioEditar={ejercicioEditar}

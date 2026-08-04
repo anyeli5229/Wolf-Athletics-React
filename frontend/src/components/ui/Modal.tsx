@@ -40,7 +40,7 @@ export default function Modal({ isOpen, title, children, onClose }: ModalProps) 
                     {title && <h3 className="text-lg font-semibold">{title}</h3>}
                 </header>
 
-                <section>
+                <section className="overflow-y-auto flex-1 pr-1">
                     {children}
                 </section>
             </div>

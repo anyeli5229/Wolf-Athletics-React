@@ -1,22 +1,28 @@
 import { useEffect, useState } from "react";
-import type { EjercicioFormulario } from "../types/formulario";
+import type { EjercicioEnRutinaFormulario } from "../types/formulario";
+import type { RutinaEjercicio } from "../types/rutinaEjercicio";
 import type { Ejercicio } from "../types/ejercicio";
 import Input from "./ui/Input";
 import Button from "./ui/Button";
 
 type FormularioEjerciciosProps = {
-    onCrearEjercicio: (ejercicioNuevo: EjercicioFormulario) => void;
-    onActualizaEjercicio: (ejercicioEditado: Ejercicio) => void;
+    ejerciciosCatalogo: Ejercicio[]; // Lista para llenar el <select>
+    errorEjercicio: string;
+    onCrearEjercicio: (ejercicioNuevo: EjercicioEnRutinaFormulario) => Promise<boolean>;
+    onActualizaEjercicio: (id: string, datos: EjercicioEnRutinaFormulario) => void;
     cancelarEdicionEjercicio: () => void;
-    ejercicioEditar: Ejercicio | null;
-}
-export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjercicio, cancelarEdicionEjercicio, ejercicioEditar }: FormularioEjerciciosProps) {
+    ejercicioEditar: RutinaEjercicio | null;
+};
+
+export default function FormularioEjercicios({ ejerciciosCatalogo = [], errorEjercicio, onCrearEjercicio, onActualizaEjercicio, cancelarEdicionEjercicio, ejercicioEditar }: FormularioEjerciciosProps) {
 
     const [formularioEjercicio, setFormularioEjercicio] = useState({
-        nombre: "",
+        exerciseId: "",
         series: "",
         repeticiones: "",
-        peso: ""
+        pesoSugerido: "",
+        descanso: "60",
+        rir: "2"
     });
 
     const [error, setError] = useState("");
@@ -24,48 +30,51 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
     useEffect(() => {
         if (ejercicioEditar) {
             setFormularioEjercicio({
-                nombre: ejercicioEditar.nombre,
+                exerciseId: ejercicioEditar.exerciseId,
                 series: ejercicioEditar.series.toString(),
                 repeticiones: ejercicioEditar.repeticiones.toString(),
-                peso: ejercicioEditar.peso.toString()
-            })
+                pesoSugerido: ejercicioEditar.pesoSugerido ? ejercicioEditar.pesoSugerido.toString() : "",
+                descanso: ejercicioEditar.descanso ? ejercicioEditar.descanso.toString() : "60",
+                rir: ejercicioEditar.rir !== undefined ? ejercicioEditar.rir.toString() : "2"
+            });
         } else {
             setFormularioEjercicio({
-                nombre: "",
+                exerciseId: "",
                 series: "",
                 repeticiones: "",
-                peso: ""
-            })
+                pesoSugerido: "",
+                descanso: "60",
+                rir: "2"
+            });
         }
         setError("");
     }, [ejercicioEditar]);
 
-    function manejarCambio(evento: React.ChangeEvent<HTMLInputElement>) {
+    function manejarCambio(evento: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
         const { name, value } = evento.target;
         setFormularioEjercicio((anterior) => ({
             ...anterior,
             [name]: value
-        }))
+        }));
     }
 
     function validarFormulario() {
-        if (formularioEjercicio.nombre.trim() === "") {
-            return "El nombre del ejercicio es obligatorio";
+        if (!ejercicioEditar && !formularioEjercicio.exerciseId) {
+            return "Debes seleccionar un ejercicio del catálogo";
         }
         if (!formularioEjercicio.series || +formularioEjercicio.series <= 0) {
-            return "Las series del ejercicio son obligatorias";
+            return "Las series del ejercicio son obligatorias y deben ser mayores a 0";
         }
         if (!formularioEjercicio.repeticiones || +formularioEjercicio.repeticiones <= 0) {
-            return "Las repeticiones del ejercicio son obligatorias";
+            return "Las repeticiones del ejercicio son obligatorias y deben ser mayores a 0";
         }
-        if (!formularioEjercicio.peso || +formularioEjercicio.peso <= 0) {
-            return "El peso del ejercicio es obligatorio";
+        if (formularioEjercicio.pesoSugerido === "" || +formularioEjercicio.pesoSugerido <= 0) {
+            return "El peso del ejercicio es obligatorio y debe ser mayor a cero"
         }
-
         return null;
     }
 
-    function handleSubmit(evento: React.SubmitEvent) {
+    async function handleSubmit(evento: React.FormEvent) {
         evento.preventDefault();
 
         const mensajeError = validarFormulario();
@@ -74,60 +83,73 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
             return;
         }
 
-        const datosFormulario: EjercicioFormulario = {
-            nombre: formularioEjercicio.nombre,
-            series: +formularioEjercicio.series,
-            repeticiones: +formularioEjercicio.repeticiones,
-            peso: +formularioEjercicio.peso
+        const datosFormulario: EjercicioEnRutinaFormulario = {
+            exerciseId: formularioEjercicio.exerciseId,
+            series: Number(formularioEjercicio.series),
+            repeticiones: Number(formularioEjercicio.repeticiones),
+            pesoSugerido: Number(formularioEjercicio.pesoSugerido),
+            descanso: Number(formularioEjercicio.descanso),
+            rir: Number(formularioEjercicio.rir)
         };
 
         if (ejercicioEditar) {
-            onActualizaEjercicio({
-                id: ejercicioEditar.id,
-                ...datosFormulario
-            })
+            onActualizaEjercicio(
+                ejercicioEditar.id,
+                datosFormulario
+            );
+
+            cancelarEdicionEjercicio();
+            setError("");
         } else {
-            onCrearEjercicio(formularioEjercicio);
+            const creado = await onCrearEjercicio(datosFormulario);
+
+            if (creado) {
+                cancelarEdicionEjercicio();
+                setError("");
+            }
         }
-
-        cancelarEdicionEjercicio();
-
-        setFormularioEjercicio({
-            nombre: "",
-            series: "",
-            repeticiones: "",
-            peso: ""
-        })
-        setError("");
     }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
+            {(error || errorEjercicio) && (
+                <div className="p-3 text-xs font-medium text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5 shrink-0">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>
+                    <span>{error || errorEjercicio}</span>
+                </div>
+            )}
 
-            {error && (
-                <div className="p-3 text-xs font-medium text-red-400 bg-red-500/10 border border-red-500 rounded-xl flex items-center gap-2">
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-                        </svg>
+            {!ejercicioEditar ? (
+                <div className="flex flex-col gap-1.5">
+                    <label className="mb-1.5 block text-sm font-medium text-slate-700">Ejercicio</label>
+                    <select
+                        name="exerciseId"
+                        value={formularioEjercicio.exerciseId}
+                        onChange={manejarCambio}
+                        className="w-full px-3 py-2 text-sm bg-white border border-gray-400 rounded-xl text-gray-500 focus:outline-none focus:border-gray-500"
+                    >
+                        <option value="">Selecciona un ejercicio...</option>
+                        {ejerciciosCatalogo.map((e) => (
+                            <option key={e.id} value={e.id}>
+                                {e.nombre} ({e.grupoMuscular})
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            ) : (
+                <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800">
+                    <span className="text-xs text-zinc-400 block">Editando ejercicio:</span>
+                    <span className="text-sm font-semibold text-zinc-100">
+                        {ejercicioEditar.exercise?.nombre || "Ejercicio seleccionado"}
                     </span>
-
-                    <span>{error}</span>
                 </div>
             )}
 
             <Input
-                name="nombre"
-                label="Nombre del ejercicio"
-                placeholder="Ej. Sentadilla, Biceps con mancuerna, jalón al pecho"
-                value={formularioEjercicio.nombre}
-                onChange={manejarCambio}
-                fullWidth
-            />
-
-            <Input
                 name="series"
-                label="Series del ejercicio"
+                label="Series"
                 placeholder="Ej. 3"
                 value={formularioEjercicio.series}
                 onChange={manejarCambio}
@@ -136,7 +158,7 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
 
             <Input
                 name="repeticiones"
-                label="Repeticiones del ejercicio"
+                label="Repeticiones"
                 placeholder="Ej. 10"
                 value={formularioEjercicio.repeticiones}
                 onChange={manejarCambio}
@@ -144,16 +166,33 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
             />
 
             <Input
-                name="peso"
-                label="Peso del ejercicio"
-                placeholder="Ej. 10"
-                value={formularioEjercicio.peso}
+                name="pesoSugerido"
+                label="Peso sugerido (kg)"
+                placeholder="Ej. 60"
+                value={formularioEjercicio.pesoSugerido}
+                onChange={manejarCambio}
+                fullWidth
+            />
+
+            <Input
+                name="descanso"
+                label="Descanso (segundos)"
+                placeholder="Ej. 60"
+                value={formularioEjercicio.descanso}
+                onChange={manejarCambio}
+                fullWidth
+            />
+
+            <Input
+                name="rir"
+                label="RIR"
+                placeholder="Ej. 2"
+                value={formularioEjercicio.rir}
                 onChange={manejarCambio}
                 fullWidth
             />
 
             <div className="flex items-center justify-end gap-2 pt-4 mt-6">
-
                 <Button
                     type="button"
                     variant="ghost"
@@ -163,16 +202,10 @@ export default function FormularioEjercicios({ onCrearEjercicio, onActualizaEjer
                     Cancelar
                 </Button>
 
-                <Button
-                    type="submit"
-                    size="sm"
-                >
+                <Button type="submit" size="sm">
                     {ejercicioEditar ? "Actualizar Ejercicio" : "Agregar Ejercicio"}
                 </Button>
-
-
             </div>
-
         </form>
-    )
+    );
 }
