@@ -139,9 +139,9 @@ export default function FormularioEjercicios({ ejerciciosCatalogo = [], errorEje
                     </select>
                 </div>
             ) : (
-                <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800">
+                <div className="p-3 rounded-xl bg-white border border-gray-400">
                     <span className="text-xs text-zinc-400 block">Editando ejercicio:</span>
-                    <span className="text-sm font-semibold text-zinc-100">
+                    <span className="text-sm font-semibold text-sky-600">
                         {ejercicioEditar.exercise?.nombre || "Ejercicio seleccionado"}
                     </span>
                 </div>

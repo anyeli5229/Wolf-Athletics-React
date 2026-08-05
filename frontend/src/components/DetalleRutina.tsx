@@ -1,29 +1,19 @@
 import { useState } from "react";
-import type { EjercicioEnRutinaFormulario } from "../types/formulario";
 import type { Rutina } from "../types/rutina";
 import FormularioEjercicios from "./FormularioEjercicios";
 import ListaEjercicios from "./ListaEjercicios";
 import Button from "./ui/Button";
 import Modal from "./ui/Modal";
-import type { RutinaEjercicio } from "../types/rutinaEjercicio";
-import type { Ejercicio } from "../types/ejercicio";
+import type { useRutinaEjercicios } from "../hooks/useRutinaEjercicios";
 
-type DetalleRutinaProps = {
+type EjerciciosRutinaHookProps = ReturnType<typeof useRutinaEjercicios>;
+
+export type DetalleRutinaProps = {
     rutina: Rutina;
-    ejercicios: RutinaEjercicio[];
-    ejerciciosCatalogo: Ejercicio[];
-    errorEjercicio: string;
-    limpiarErrorEjercicio: () => void;
-    onCrearEjercicio: (datos: EjercicioEnRutinaFormulario) => Promise<boolean>;
-    onEditar: (ejercicioId: string) => void;
-    ejercicioEditar: RutinaEjercicio | null;
-    onActualizaEjercicio: (ejercicioId: string, datosActualizados: EjercicioEnRutinaFormulario) => void;
-    cancelarEdicionEjercicio: () => void;
-    onEliminarEjercicio: (ejercicioId: string) => void;
     onVolver: () => void;
-};
+} & EjerciciosRutinaHookProps;
 
-export default function DetalleRutina({ rutina, ejercicios, ejerciciosCatalogo, errorEjercicio, limpiarErrorEjercicio, onCrearEjercicio, onEditar, ejercicioEditar, onActualizaEjercicio, cancelarEdicionEjercicio, onEliminarEjercicio, onVolver }: DetalleRutinaProps) {
+export default function DetalleRutina({ rutina, ejercicios, ejerciciosCatalogo, errorEjercicio, limpiarErrorEjercicio, crearEjercicio, seleccionarEjercicioEditar, ejercicioEditar, actualizarEjercicio, cancelarEdicionEjercicio, eliminarEjercicio, onVolver }: DetalleRutinaProps) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -33,7 +23,7 @@ export default function DetalleRutina({ rutina, ejercicios, ejerciciosCatalogo, 
     };
 
     const abrirModalEditar = (ejercicioId: string) => {
-        onEditar(ejercicioId);
+        seleccionarEjercicioEditar(ejercicioId);
         setIsModalOpen(true);
     };
 
@@ -90,7 +80,7 @@ export default function DetalleRutina({ rutina, ejercicios, ejerciciosCatalogo, 
                     ejercicios={ejercicios}
                     onEditar={abrirModalEditar}
                     onEliminarEjercicio={(ejercicioId: string) => {
-                        onEliminarEjercicio(ejercicioId);
+                        eliminarEjercicio(ejercicioId);
                     }}
                     onCrearEjercicio={abrirModalCrear}
                 />
@@ -104,9 +94,9 @@ export default function DetalleRutina({ rutina, ejercicios, ejerciciosCatalogo, 
                 <FormularioEjercicios
                     ejerciciosCatalogo={ejerciciosCatalogo}
                     errorEjercicio={errorEjercicio}
-                    onCrearEjercicio={onCrearEjercicio}
+                    onCrearEjercicio={crearEjercicio}
                     onActualizaEjercicio={(ejercicioId, datos) => {
-                        onActualizaEjercicio(ejercicioId, datos);
+                        actualizarEjercicio(ejercicioId, datos);
                         cerrarModal();
                     }}
                     ejercicioEditar={ejercicioEditar}
