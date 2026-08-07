@@ -12,9 +12,9 @@ type FormularioEjerciciosProps = {
     onActualizaEjercicio: (id: string, datos: EjercicioEnRutinaFormulario) => void;
     cancelarEdicionEjercicio: () => void;
     ejercicioEditar: RutinaEjercicio | null;
-};
+}
 
-export default function FormularioEjercicios({ ejerciciosCatalogo = [], errorEjercicio, onCrearEjercicio, onActualizaEjercicio, cancelarEdicionEjercicio, ejercicioEditar }: FormularioEjerciciosProps) {
+export default function FormularioRutinaEjercicio({ ejerciciosCatalogo, errorEjercicio, onCrearEjercicio, onActualizaEjercicio, cancelarEdicionEjercicio, ejercicioEditar }: FormularioEjerciciosProps) {
 
     const [formularioEjercicio, setFormularioEjercicio] = useState({
         exerciseId: "",
@@ -68,7 +68,7 @@ export default function FormularioEjercicios({ ejerciciosCatalogo = [], errorEje
         if (!formularioEjercicio.repeticiones || +formularioEjercicio.repeticiones <= 0) {
             return "Las repeticiones del ejercicio son obligatorias y deben ser mayores a 0";
         }
-        if (formularioEjercicio.pesoSugerido === "" || +formularioEjercicio.pesoSugerido <= 0) {
+        if (formularioEjercicio.pesoSugerido === "" || +formularioEjercicio.pesoSugerido < 0) {
             return "El peso del ejercicio es obligatorio y debe ser mayor a cero"
         }
         return null;
@@ -110,8 +110,17 @@ export default function FormularioEjercicios({ ejerciciosCatalogo = [], errorEje
         }
     }
 
+    const sinEjerciciosDisponibles = !ejercicioEditar && ejerciciosCatalogo.length === 0;
+
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
+
+            {sinEjerciciosDisponibles && (
+                <div className="p-3 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-xl">
+                    Ya has agregado todos los ejercicios disponibles a esta rutina.
+                </div>
+            )}
+
             {(error || errorEjercicio) && (
                 <div className="p-3 text-xs font-medium text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5 shrink-0">
@@ -129,8 +138,9 @@ export default function FormularioEjercicios({ ejerciciosCatalogo = [], errorEje
                         value={formularioEjercicio.exerciseId}
                         onChange={manejarCambio}
                         className="w-full px-3 py-2 text-sm bg-white border border-gray-400 rounded-xl text-gray-500 focus:outline-none focus:border-gray-500"
+                        disabled={sinEjerciciosDisponibles}
                     >
-                        <option value="">Selecciona un ejercicio...</option>
+                        <option value="">{sinEjerciciosDisponibles ? "No hay más ejercicios disponibles" : "Selecciona un ejercicio..."}</option>
                         {ejerciciosCatalogo.map((e) => (
                             <option key={e.id} value={e.id}>
                                 {e.nombre} ({e.grupoMuscular})
@@ -202,10 +212,10 @@ export default function FormularioEjercicios({ ejerciciosCatalogo = [], errorEje
                     Cancelar
                 </Button>
 
-                <Button type="submit" size="sm">
+                <Button type="submit" size="sm" disabled={sinEjerciciosDisponibles}>
                     {ejercicioEditar ? "Actualizar Ejercicio" : "Agregar Ejercicio"}
                 </Button>
             </div>
         </form>
-    );
+    )
 }

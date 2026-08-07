@@ -49,10 +49,16 @@ export default function Home({ modal }: HomeProps) {
     return (
         <div className="min-h-screen text-slate-700 p-6">
 
+
             <Header
-                onCrearRutina={abrirModalCrear}
-                mostrarBotonCrear={true}
+                onAccionPrincipal={abrirModalCrear}
+                textoBotonPrincipal="+ Nueva Rutina"
+                linkNavegacion={{
+                    texto: "← Catálogo de Ejercicios",
+                    to: "/ejercicios"
+                }}
             />
+
 
             <main className="max-w-7xl mx-auto p-6">
                 <ListaRutinas

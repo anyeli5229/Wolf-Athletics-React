@@ -9,15 +9,25 @@ async function buscarEjercicio(id: string) {
     });
 }
 
-export async function obtenerTodosLosEjercicios() {
+export async function obtenerTodosLosEjercicios(routineId?: string) {
     const usuarioDemo = await obtenerUsuarioDemo();
+
     if (!usuarioDemo) return null;
+
     return prisma.exercise.findMany({
         where: {
             OR: [
                 { createdBy: null },
                 { createdBy: usuarioDemo.id }
-            ]
+            ],
+
+            ...(routineId && {// (condicion && { objeto })
+                routineExercises: {
+                    none: {
+                        routineId //solo los ejercicios donde NINGUNA (none) de sus relaciones en la tabla routineExercises coincida con routineId
+                    }
+                }
+            })
         }
     });
 }

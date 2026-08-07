@@ -1,63 +1,66 @@
-import type { RutinaEjercicio } from "../types/rutinaEjercicio";
+import type { Ejercicio } from "../types/ejercicio";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
 
 type EjercicioCardProps = {
-  ejercicio: RutinaEjercicio;
-  onEditar: (ejercicioId: string) => void;
-  onEliminarEjercicio: (ejercicioId: string) => void;
-};
+  ejercicio: Ejercicio;
+  onEditar: (id: string) => void;
+  onEliminar: (id: string) => void;  
+}
 
-export default function EjercicioCard({ ejercicio, onEditar, onEliminarEjercicio }: EjercicioCardProps) {
-
-  const handleEditar = () => onEditar(ejercicio.id);
-  const handleEliminar = () => onEliminarEjercicio(ejercicio.id);
-
+export default function EjercicioCard({ ejercicio, onEditar, onEliminar }: EjercicioCardProps) {
   return (
-    <Card className="group relative bg-slate-900/80 border border-slate-200 hover:border-sky-500/50 transition-all duration-300 p-5 rounded-2xl shadow-lg backdrop-blur-sm flex flex-col justify-between mt-10">
+    <Card className="group relative bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-md transition-all duration-200 p-5 rounded-2xl shadow-xs flex flex-col justify-between">
       <div>
-
-        <div className="flex items-center justify-between gap-2 mb-4">
-          <h2 className="text-lg font-bold text-gray-500 group-hover:text-sky-400 transition-colors">
-            {ejercicio.exercise?.nombre}
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h2 className="text-base font-bold text-slate-800 tracking-tight leading-snug group-hover:text-sky-600 transition-colors">
+            {ejercicio.nombre}
           </h2>
+
+          {ejercicio.grupoMuscular && (
+            <span className="shrink-0 px-2.5 py-1 text-[11px] font-medium text-sky-700 bg-sky-50 border border-sky-100 rounded-lg">
+              {ejercicio.grupoMuscular}
+            </span>
+          )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2 py-2 px-3 rounded-xl bg-slate-100 border border-slate-300 mb-4 text-center group-hover:border-sky-400">
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-700">Series</span>
-            <span className="text-sm font-bold text-sky-500">{ejercicio.series}</span>
-          </div>
-
-          <div className="flex flex-col items-center border-x border-slate-400">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-700">Reps</span>
-            <span className="text-sm font-bold text-sky-500">{ejercicio.repeticiones}</span>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-700">Peso</span>
-            <span className="text-sm font-bold text-sky-500">{ejercicio.pesoSugerido} kg</span>
-          </div>
-        </div>
+        {ejercicio.descripcion && (
+          <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 mt-2">
+            {ejercicio.descripcion}
+          </p>
+        )}
       </div>
 
-      <div className="flex items-center justify-end pt-3 border-t border-slate-300 gap-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleEditar}
-        >
-          Editar
-        </Button>
+      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+        {ejercicio.equipo ? (
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-4 shrink-0">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l5.654-4.654m0 0a3.2 3.2 0 0 1-.766-1.208l-3.03-2.496m0 0L2.1 2.1a2.652 2.652 0 0 0 0 3.75l5.877 5.877" />
+            </svg>
+            <span>{ejercicio.equipo}</span>
+          </div>
+        ) : <span />}
 
-        <Button
-          variant="danger-ghost"
-          size="sm"
-          onClick={handleEliminar}
-        >
-          Eliminar
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onEditar(ejercicio.id)}
+            className="text-slate-500 hover:text-slate-800 text-xs font-medium"
+          >
+            Editar
+          </Button>
+
+          <Button
+            variant="danger-ghost"
+            size="sm"
+            onClick={() => onEliminar(ejercicio.id)}
+            className="text-xs font-medium"
+          >
+            Eliminar
+          </Button>
+        </div>
       </div>
     </Card>
-  );
+  )
 }

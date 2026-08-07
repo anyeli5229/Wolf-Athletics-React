@@ -1,6 +1,5 @@
-import type { Ejercicio } from "../types/ejercicio"
 import type { RutinaEjercicio } from "../types/rutinaEjercicio";
-import EjercicioCard from "./EjercicioCard"
+import RutinaEjercicioCard from "./RutinaEjercicioCard";
 import Card from "./ui/Card";
 
 type ListaEjerciciosProps = {
@@ -44,11 +43,11 @@ export default function ListaEjercicios({ ejercicios, onEditar, onEliminarEjerci
             ) : (
                 <section className="grid gap-6 md:grid-cols-2 mx-5">
                     {ejercicios.map(ejercicio => (
-                        <EjercicioCard
+                        <RutinaEjercicioCard
                             key={ejercicio.id}
                             ejercicio={ejercicio}
                             onEditar={onEditar}
-                            onEliminarEjercicio={onEliminarEjercicio}
+                            onEliminar={onEliminarEjercicio}
                         />
                     ))}
                 </section>

@@ -53,6 +53,6 @@ model RoutineExercise {
   descanso     Int
   rir          Int
   notas        String?
-  exercise     Exercise @relation(fields: [exerciseId], references: [id])
-  routine      Routine  @relation(fields: [routineId], references: [id])
+  exercise     Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  routine      Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
 }

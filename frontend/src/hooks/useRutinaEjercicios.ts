@@ -28,7 +28,7 @@ export function useRutinaEjercicios(routineId: string) {
 
     useEffect(() => {
         async function cargarEjerciciosCatalogo() {
-            const ejerciciosCatalogo = await obtenerEjercicios();
+            const ejerciciosCatalogo = await obtenerEjercicios(routineId);
             setEjerciciosCatalogo(ejerciciosCatalogo);
         }
 

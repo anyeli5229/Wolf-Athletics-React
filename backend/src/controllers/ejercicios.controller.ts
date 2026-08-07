@@ -4,7 +4,8 @@ import { EjercicioInput } from "../schemas/ejercicio.schema";
 import { NotFoundError } from "../errors/NotFoundError";
 
 export async function obtenerEjercicios(req: Request, res: Response) {
-    const ejercicios = await obtenerTodosLosEjercicios()
+    const routineId = req.query.routineId as string | undefined;
+    const ejercicios = await obtenerTodosLosEjercicios(routineId);
     res.json(ejercicios);
 }
 

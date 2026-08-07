@@ -1,3 +1,5 @@
+import type { RutinaEjercicio } from "./rutinaEjercicio";
+
 export type Rutina = {
   id: string;
   nombre: string;
@@ -5,6 +7,7 @@ export type Rutina = {
   nivel?: string;
   duracion?: number;
   userId: string;
+  ejercicios?: RutinaEjercicio[];
   createdAt: string;
   updatedAt: string;
 };

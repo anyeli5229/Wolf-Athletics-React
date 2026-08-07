@@ -2,6 +2,7 @@ import { useModal } from "./hooks/useModal";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import { RutinaPage } from "./pages/RutinaPage";
+import EjercicioPage from "./pages/EjercicioPage";
 
 
 function App() {
@@ -23,6 +24,13 @@ function App() {
         path="/rutina/:id"
         element={
           <RutinaPage />
+        }
+      />
+
+      <Route
+        path="/ejercicios"
+        element={
+          <EjercicioPage />
         }
       />
     </Routes>
