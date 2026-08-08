@@ -4,9 +4,12 @@ import { validateSchema } from "../middlewares/validateSchema.middleware";
 import { actualizarEjercicioSchema, ejercicioSchema } from "../schemas/ejercicio.schema";
 import { asyncHandler } from "../utils/asyncHandler";
 import { validarId } from "../middlewares/rutina.middleware";
+import { autenticarUsuario } from "../middlewares/auth.middleware";
 
 
 const router = Router();
+
+router.use(autenticarUsuario);
 
 router.get("/", obtenerEjercicios);
 router.post("/", validateSchema(ejercicioSchema), asyncHandler(crearEjercicio));

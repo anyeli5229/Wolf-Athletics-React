@@ -1,30 +1,26 @@
 import prisma from "../config/prisma";
 import { ActualizarEjercicioInput, EjercicioInput } from "../schemas/ejercicio.schema";
-import { obtenerUsuarioDemo } from "./usuario.service";
 
 
-async function buscarEjercicio(id: string) {
-    return prisma.exercise.findUnique({
-        where: { id }
+async function buscarEjercicio(userId: string, id: string) {
+    return prisma.exercise.findFirst({
+        where: { id, createdBy: userId }
     });
 }
 
-export async function obtenerTodosLosEjercicios(routineId?: string) {
-    const usuarioDemo = await obtenerUsuarioDemo();
-
-    if (!usuarioDemo) return null;
+export async function obtenerTodosLosEjercicios(userId:string, routineId?: string) {
 
     return prisma.exercise.findMany({
         where: {
             OR: [
                 { createdBy: null },
-                { createdBy: usuarioDemo.id }
+                { createdBy: userId }
             ],
 
             ...(routineId && {// (condicion && { objeto })
                 routineExercises: {
                     none: {
-                        routineId //solo los ejercicios donde NINGUNA (none) de sus relaciones en la tabla routineExercises coincida con routineId
+                        routineId //solo los ejercicios donde NINGUNA (none) de sus relaciones en la tabla routineExercises coincida con routineId(ejercicios que NO estén en esa rutina)
                     }
                 }
             })
@@ -32,19 +28,17 @@ export async function obtenerTodosLosEjercicios(routineId?: string) {
     });
 }
 
-export async function crearEjercicio(datos: EjercicioInput) {
-    const usuarioDemo = await obtenerUsuarioDemo();
-    if (!usuarioDemo) return null;
+export async function crearEjercicio(userId: string, datos: EjercicioInput) {
     return prisma.exercise.create({
         data: {
             ...datos,
-            createdBy: usuarioDemo.id
+            createdBy: userId
         }
     });
 }
 
-export async function actualizarEjercicio(id: string, datosActualizados: ActualizarEjercicioInput) {
-    const ejercicio = await buscarEjercicio(id);
+export async function actualizarEjercicio(userId: string, id: string, datosActualizados: ActualizarEjercicioInput) {
+    const ejercicio = await buscarEjercicio(userId, id);
     if (!ejercicio) return null;
     return prisma.exercise.update({
         where: { id },
@@ -52,8 +46,8 @@ export async function actualizarEjercicio(id: string, datosActualizados: Actuali
     });
 }
 
-export async function eliminarEjercicio(id: string) {
-    const ejercicio = await buscarEjercicio(id);
+export async function eliminarEjercicio(userId: string, id: string) {
+    const ejercicio = await buscarEjercicio(userId, id);
     if (!ejercicio) return null;
     return prisma.exercise.delete({
         where: { id }
