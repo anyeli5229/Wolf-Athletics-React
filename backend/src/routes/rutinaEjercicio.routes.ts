@@ -4,8 +4,11 @@ import { validateSchema } from "../middlewares/validateSchema.middleware";
 import { actualizarRutinaEjercicioSchema, rutinaEjercicioSchema } from "../schemas/rutinaEjercicio.schema";
 import { asyncHandler } from "../utils/asyncHandler";
 import { actualizarRutinaEjercicio, crearRutinaEjercicio, eliminarRutinaEjercicio, obtenerRutinaEjercicios } from "../controllers/rutinaEjercicio.controller";
+import { autenticarUsuario } from "../middlewares/auth.middleware";
 
 const router = Router();
+
+router.use(autenticarUsuario);
 
 router.get("/rutinas/:id/ejercicios", validarId, asyncHandler(obtenerRutinaEjercicios))
 router.post("/rutinas/:id/ejercicios", validarId, validateSchema(rutinaEjercicioSchema), asyncHandler(crearRutinaEjercicio));
