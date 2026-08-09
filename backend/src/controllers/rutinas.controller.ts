@@ -2,33 +2,27 @@ import { Request, Response } from "express";
 import { obtenerTodasLasRutinas, crearRutina as crearRutinaService, actualizarRutina as actualizarRutinaService, eliminarRutina as eliminarRutinaService } from "../services/rutinas.services";
 import { RutinaInput } from "../schemas/rutina.schema";
 import { NotFoundError } from "../errors/NotFoundError";
-import { UnauthorizedError } from "../errors/UnauthorizedError";
+import { obtenerUsuarioAutenticado } from "../utils/auth";
 
 
 export async function obtenerRutinas(req: Request, res: Response) {
-    if (!req.usuario?.id) {
-        throw new UnauthorizedError("Token inválido");
-    }
-    const rutinas = await obtenerTodasLasRutinas(req.usuario.id);
+    const { id: userId } = obtenerUsuarioAutenticado(req);
+    const rutinas = await obtenerTodasLasRutinas(userId);
     res.json(rutinas);
 }
 
 export async function crearRutina(req: Request<{}, {}, RutinaInput>, res: Response) {
-    if (!req.usuario?.id) {
-        throw new UnauthorizedError("Token inválido");
-    }
-    const nuevaRutina = await crearRutinaService(req.body, req.usuario.id);
+    const { id: userId } = obtenerUsuarioAutenticado(req);
+    const nuevaRutina = await crearRutinaService(req.body, userId);
     res.status(201).json(nuevaRutina);
 }
 
 export async function actualizarRutina(req: Request<{ id: string }>, res: Response) {
     const { id } = req.params;
 
-    if (!req.usuario?.id) {
-        throw new UnauthorizedError("Token inválido");
-    }
+    const { id: userId } = obtenerUsuarioAutenticado(req);
 
-    const rutinaActualizada = await actualizarRutinaService(id, req.usuario.id, req.body);
+    const rutinaActualizada = await actualizarRutinaService(id, userId, req.body);
     if (!rutinaActualizada) {
         throw new NotFoundError("Rutina no encontrada");
     }
@@ -38,14 +32,13 @@ export async function actualizarRutina(req: Request<{ id: string }>, res: Respon
 export async function eliminarRutina(req: Request<{ id: string }>, res: Response) {
     const { id } = req.params;
 
-    if (!req.usuario?.id) {
-        throw new UnauthorizedError("Token inválido");
-    }
-    
-    const rutinaEliminada = await eliminarRutinaService(id, req.usuario.id,);
+    const { id: userId } = obtenerUsuarioAutenticado(req);
+
+    const rutinaEliminada = await eliminarRutinaService(id, userId);
 
     if (!rutinaEliminada) {
         throw new NotFoundError("Rutina no encontrada");
     }
+
     res.json(rutinaEliminada);
 }
