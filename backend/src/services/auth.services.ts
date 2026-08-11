@@ -1,7 +1,6 @@
 import bcrypt  from "bcrypt"
 import { LoginInput, RegisterInput } from "../schemas/auth/auth.schema";
 import prisma from "../config/prisma";
-import { NotFoundError } from "../errors/NotFoundError";
 
 async function hashPassword(password:string) {
     const salts = 10;
@@ -33,11 +32,20 @@ export async function register(datos: RegisterInput) {
 }
 
 export async function login(datos: LoginInput) {
+    console.log("--> Body recibido en login service:", datos);
+
     const usuarioExiste = await buscarUsuario(datos.email);
-    if(!usuarioExiste) return null;
+    if (!usuarioExiste) {
+        console.log("❌ FALLO: El correo no existe en la BD:", datos.email);
+        return null;
+    }
 
     const passwordCorrecta = await verificarPassword(datos.password, usuarioExiste.password);
-    if(!passwordCorrecta) return null;
+    if (!passwordCorrecta) {
+        console.log("❌ FALLO: La contraseña no coincide con el hash almacenado");
+        return null;
+    }
 
+    console.log("✅ ÉXITO: Usuario autenticado correctamente");
     return usuarioExiste;
 }

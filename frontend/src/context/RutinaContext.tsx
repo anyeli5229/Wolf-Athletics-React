@@ -1,5 +1,6 @@
 import { createContext, type ReactNode } from "react";
-import { useRutinas, type UseRutinasType } from "../hooks/useRutinas";
+import { useRutinas } from "../hooks/useRutinas";
+import type { UseRutinasType } from "../types/hooks";
 
 
 export const RutinasContext = createContext<UseRutinasType | null>(null);

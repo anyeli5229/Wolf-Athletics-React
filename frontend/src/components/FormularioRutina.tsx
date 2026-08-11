@@ -25,8 +25,8 @@ function FormularioRutina({ onCrearRutina, onActualizarRutina, cancelarEdicion, 
     if (rutinaEditar) {
       setFormulario({
         nombre: rutinaEditar.nombre,
-        nivel: rutinaEditar.nivel,
-        duracion: rutinaEditar.duracion.toString(),
+        nivel: rutinaEditar.nivel ?? "Medio",
+        duracion: rutinaEditar.duracion?.toString() ?? "",
       })
     } else {
       setFormulario({

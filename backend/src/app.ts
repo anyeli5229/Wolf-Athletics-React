@@ -14,11 +14,12 @@ app.use(cors({
 
 app.use(express.json());
 
+app.use("/api/auth", authRoutes);
+
 app.use("/api/rutinas", rutinasRoutes);
 app.use("/api/ejercicios", ejerciciosRoutes);
 app.use("/api", rutinaEjercicioRoutes);
 
-app.use("/api/auth", authRoutes);
 
 app.use(errorMiddleware); //Se coloca al final para que haya errores que capturar(después del controlador)
 

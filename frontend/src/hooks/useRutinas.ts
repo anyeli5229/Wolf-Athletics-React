@@ -3,6 +3,7 @@ import type { Rutina } from "../types/rutina";
 import type { UseRutinasType } from "../types/hooks";
 import { obtenerRutinas, crearRutina as crearRutinaApi, actualizarRutina as actualizarRutinaApi, eliminarRutina as eliminarRutinaApi } from "../services/rutinasApi";
 import type { RutinaFormulario } from "../types/formulario";
+import { obtenerToken } from "../services/token";
 
 
 export function useRutinas(): UseRutinasType {
@@ -21,6 +22,10 @@ export function useRutinas(): UseRutinasType {
 
   // Effects
   useEffect(() => {
+    const token = obtenerToken();
+    
+    if (!token) return;// Si no hay token, no hacer fetch a la API protegida
+
     async function cargar() {
       const rutinas = await obtenerRutinas();
       setRutinas(rutinas);
@@ -33,12 +38,12 @@ export function useRutinas(): UseRutinasType {
   // Actions
   // CRUD
 
-  async function crearRutina(rutinaNueva: RutinaFormulario):Promise<void> {
+  async function crearRutina(rutinaNueva: RutinaFormulario): Promise<void> {
     const rutinaCreada = await crearRutinaApi(rutinaNueva);
     setRutinas(anteriores => [...anteriores, rutinaCreada]);
   }
 
-  async function actualizarRutina(id: string, datosActualizados: RutinaFormulario):Promise<void> {
+  async function actualizarRutina(id: string, datosActualizados: RutinaFormulario): Promise<void> {
     const rutinaActualizada = await actualizarRutinaApi(id, datosActualizados);
 
     setRutinas((anteriores) =>
@@ -48,7 +53,7 @@ export function useRutinas(): UseRutinasType {
     );
   }
 
-  async function eliminarRutina(id: string):Promise<void> {
+  async function eliminarRutina(id: string): Promise<void> {
     const rutinaEliminada = await eliminarRutinaApi(id);
     setRutinas((prev) => prev.filter((rutina) => rutina.id !== rutinaEliminada.id));
   }
