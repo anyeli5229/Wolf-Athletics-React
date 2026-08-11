@@ -26,6 +26,7 @@ export async function iniciarSesion(req: Request, res: Response) {
 
     const token = generarJWT({
         id: usuario.id,
+        nombre: usuario.nombre,
         email: usuario.email,
     })
 
@@ -46,6 +47,7 @@ export async function auth(req: Request, res: Response) {
     res.json({
         usuario: {
             id: req.usuario.id,
+            nombre: req.usuario.nombre,
             email: req.usuario.email
         }
     });

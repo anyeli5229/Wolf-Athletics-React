@@ -26,13 +26,11 @@ export type LoginInput = Pick<Usuario, "email"> & {
 }
 
 export type MeResponse = {
-    usuario: {
-        id: string;
-        email: string;
-    }
+    usuario: UsuarioAutenticado;
 }
 
 export type UsuarioAutenticado = {
     id: string;
+    nombre: string;
     email: string;
 }
